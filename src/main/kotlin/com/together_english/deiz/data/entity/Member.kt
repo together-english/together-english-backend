@@ -1,4 +1,4 @@
-package com.together_english.deiz.model.entity
+package com.together_english.deiz.data.entity
 
 import com.together_english.deiz.common.base.BaseEntity
 import jakarta.persistence.*

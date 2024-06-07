@@ -1,4 +1,4 @@
-package com.together_english.deiz.config.security
+package com.together_english.deiz.security.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
