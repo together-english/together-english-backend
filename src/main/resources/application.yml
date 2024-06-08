@@ -15,7 +15,7 @@ spring:
       ddl-auto: update
     show-sql: true
 
-app:
-  security:
-    secret: "2b44b0b00fd822d8ce753e54dac3dc4e06c2725f7db930f3b9924468b53194dbccdbe23d7baa5ef5fb4ca4b2e64700bad60c5a7c45eaba56880985582fba4"
-    expiration: 36000000
+jwt:
+  secret: fweuiorfhjiweofji2390ru348902feruiodfh89w3ruf89023ruj3902rfu902w3rf9023urf900
+  accessExpiration: 86400 # 1 day
+  refreshExpiration: 604800 # 1 week
