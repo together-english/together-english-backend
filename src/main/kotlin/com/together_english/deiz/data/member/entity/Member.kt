@@ -19,8 +19,8 @@ class Member(
         password: String
 ): BaseEntity(), UserDetails {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    var password: String = password
-        private set
+    private var password: String = password
+
     @Column(nullable = false)
     var name: String = name
         private set
