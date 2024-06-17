@@ -1,30 +1,44 @@
 package com.together_english.deiz.security.util
 
+import com.together_english.deiz.data.member.repository.MemberRepository
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
 class JwtUtil(
-        @Value("\${jwt.secret}") val secret: String,
+        @Value("\${jwt.secret}") private val secret: String,
         @Value("\${jwt.accessExpiration}") val accessExpiration: Long,
-        @Value("\${jwt.refreshExpiration}") val refreshExpiration: Long
+        @Value("\${jwt.refreshExpiration}") val refreshExpiration: Long,
+        private val memberRepository: MemberRepository,
+        private val userDetailsService: UserDetailsService
 ) {
 
+    private val LOGGER = LoggerFactory.getLogger(JwtUtil::class.java)
+
     fun generateAccessToken(email: String): String {
+        LOGGER.info("access token 생성 시작")
         return Jwts.builder()
+                .header().add("typ", "access").and()
                 .claims().add("email", email).and()
                 .issuedAt(Date())
                 .expiration(Date(System.currentTimeMillis() + accessExpiration))
                 .signWith(Keys.hmacShaKeyFor(secret.toByteArray()))
-                .compact();
+                .compact()
 
     }
 
     fun generateRefreshToken(email: String): String {
+        LOGGER.info("refresh token 생성 시작")
         return Jwts.builder()
+                .header().add("typ", "refresh").and()
                 .claims().add("email", email).and()
                 .issuedAt(Date())
                 .expiration(Date(System.currentTimeMillis() + refreshExpiration))
@@ -32,13 +46,35 @@ class JwtUtil(
                 .compact()
     }
 
-    fun validateTokenExpiration(token: String): Boolean {
+    fun validateToken(token: String): Boolean {
+        LOGGER.info("토큰 검증 시작")
         val claimsJws = Jwts.parser()
                 .verifyWith(Keys.hmacShaKeyFor(secret.toByteArray()))
                 .build()
                 .parseSignedClaims(token)
 
+        val email = claimsJws.payload["email"] as String
+
+        memberRepository.findByEmail(email).orElseThrow {
+            UsernameNotFoundException(email+"해당 유저가 존재하지 않습니다.")
+        }
+
         return !claimsJws.payload.expiration.before(Date())
+    }
+
+    fun getAuthentication(token: String): Authentication {
+        LOGGER.info("get authentication 시작")
+        val claimsJws = Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(secret.toByteArray()))
+                .build()
+                .parseSignedClaims(token)
+
+        val email = claimsJws.payload["email"] as String
+
+        val userDetails = userDetailsService.loadUserByUsername(email)
+
+        return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
+
     }
 
 }
