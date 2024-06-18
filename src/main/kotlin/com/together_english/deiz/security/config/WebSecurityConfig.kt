@@ -1,6 +1,7 @@
 package com.together_english.deiz.security.config
 
 import com.together_english.deiz.security.filter.JwtAuthenticationFilter
+import com.together_english.deiz.security.util.CustomAuthenticationEntryPoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -37,6 +38,9 @@ class WebSecurityConfig(
                 }
             }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(jwtAuthenticaitonFilter)
+            exceptionHandling {
+                authenticationEntryPoint = CustomAuthenticationEntryPoint()
+            }
         }
         return http.build()
     }
