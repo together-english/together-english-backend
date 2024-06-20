@@ -16,10 +16,12 @@ class Member(
         name: String,
         @Column(nullable = false, unique = true)
         val email: String,
-        password: String
+        password: String,
+        profile: String?
 ): BaseEntity(), UserDetails {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private var password: String = password
+    var password: String = password
+        private set
 
     @Column(nullable = false)
     var name: String = name
@@ -31,7 +33,7 @@ class Member(
     var phone: String? = null
         private set
 
-    var profile: String? = null
+    var profile: String? = profile
         private set
 
     var valid: Boolean = true
@@ -42,12 +44,12 @@ class Member(
     @Enumerated(EnumType.STRING)
     var roles: MutableList<Role> = mutableListOf(Role.USER)
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        return this.roles;
+        return this.roles
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     override fun getPassword(): String {
-        return this.password;
+        return this.password
     }
 
     override fun getUsername(): String {
