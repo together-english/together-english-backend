@@ -19,7 +19,7 @@ class AuthService(
         val member = Member(
                 name = signUpDto.name,
                 email = signUpDto.email,
-                password = encodedPassword,
+                hashedPassword = encodedPassword,
                 profile = signUpDto.profile
         )
         memberRepository.save(member)

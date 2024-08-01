@@ -16,11 +16,11 @@ class Member(
         name: String,
         @Column(nullable = false, unique = true)
         val email: String,
-        password: String,
+        hashedPassword: String,
         profile: String?
 ): BaseEntity(), UserDetails {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    var password: String = password
+    var hashedPassword: String = hashedPassword
         private set
 
     @Column(nullable = false)
@@ -49,7 +49,7 @@ class Member(
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     override fun getPassword(): String {
-        return this.password
+        return this.hashedPassword
     }
 
     override fun getUsername(): String {

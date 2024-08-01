@@ -9,6 +9,13 @@ plugins {
 	kotlin("plugin.jpa") version "1.9.24"
 }
 
+val snippetsDir by extra { file("build/generated-snippets") }
+
+configurations {
+	create("asciidoctorExt")
+}
+
+
 group = "com.together-english"
 version = "0.0.1-SNAPSHOT"
 
@@ -19,8 +26,6 @@ java {
 repositories {
 	mavenCentral()
 }
-
-extra["snippetsDir"] = file("build/generated-snippets")
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -34,8 +39,9 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.5")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.5")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
+	"asciidoctorExt"("org.springframework.restdocs:spring-restdocs-asciidoctor:{project-version}")
+	testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 	testImplementation("org.springframework.security:spring-security-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
@@ -57,5 +63,6 @@ tasks.test {
 
 tasks.asciidoctor {
 	inputs.dir(project.extra["snippetsDir"]!!)
+	configurations("asciidoctorExt")
 	dependsOn(tasks.test)
 }
