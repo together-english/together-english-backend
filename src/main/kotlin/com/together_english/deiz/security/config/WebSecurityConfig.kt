@@ -24,7 +24,9 @@ class WebSecurityConfig(
         http {
             authorizeHttpRequests {
                 authorize("/", permitAll)
-                authorize("/h2-console/**", permitAll) // H2 콘솔 경로에 대한 접근 허용
+                authorize("/h2-console/**", permitAll)
+                authorize("/swagger-ui/**", permitAll)
+                authorize("api-docs/**", permitAll)
             }
             csrf { disable() }
             sessionManagement {
@@ -47,7 +49,7 @@ class WebSecurityConfig(
 
     @Bean
     fun webSecurityCustomizer() = WebSecurityCustomizer { web ->
-        web.ignoring().requestMatchers(AntPathRequestMatcher("/h2-console/**"))
+        web.ignoring().requestMatchers("/h2-console/**", "/swagger-ui/**", "/api-docs/**")
     }
 
 

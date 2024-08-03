@@ -19,3 +19,9 @@ jwt:
   secret: fweuiorfhjiweofji2390ru348902feruiodfh89w3ruf89023ruj3902rfu902w3rf9023urf900
   accessExpiration: 86400 # 1 day
   refreshExpiration: 604800 # 1 week
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /index.html
