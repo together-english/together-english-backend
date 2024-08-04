@@ -1,5 +1,6 @@
 package com.together_english.deiz.security.util
 
+import com.together_english.deiz.data.JwtToken
 import com.together_english.deiz.data.member.repository.MemberRepository
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
@@ -22,6 +23,13 @@ class JwtUtil(
 ) {
 
     private val LOGGER = LoggerFactory.getLogger(JwtUtil::class.java)
+
+    fun generateAllToken(email: String): JwtToken {
+        return JwtToken(
+                accessToken = generateAccessToken(email),
+                refreshToken = generateRefreshToken(email)
+        )
+    }
 
     fun generateAccessToken(email: String): String {
         LOGGER.info("access token 생성 시작")

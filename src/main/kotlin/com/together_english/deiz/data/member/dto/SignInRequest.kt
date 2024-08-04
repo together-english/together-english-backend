@@ -4,7 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotEmpty
 
-data class SignInDto(
+@Schema(description = "로그인 요청")
+data class SignInRequest(
         @field:Email(message = "Email should be valid")
         @field:NotEmpty(message = "Email is required")
         @Schema(description = "이메일", example = "paka@example.com")

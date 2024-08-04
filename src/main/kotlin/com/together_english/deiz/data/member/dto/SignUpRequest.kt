@@ -5,12 +5,15 @@ import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Size
 import io.swagger.v3.oas.annotations.media.Schema
 
-@Schema(description = "회원가입 DTO")
-data class SignUpDto(
+@Schema(description = "회원가입 요청")
+data class SignUpRequest(
 
         @field:NotEmpty(message = "Name is required")
         @Schema(description = "이름", example = "파카")
         val name: String,
+
+        @Schema(description = "닉네임", example = "제트")
+        val nickname: String?,
 
         @field:Email(message = "Email should be valid")
         @field:NotEmpty(message = "Email is required")

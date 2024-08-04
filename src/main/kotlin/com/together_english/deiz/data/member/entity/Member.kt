@@ -14,6 +14,7 @@ class Member(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long? = null,
         name: String,
+        nickname: String,
         @Column(nullable = false, unique = true)
         val email: String,
         hashedPassword: String,
@@ -27,7 +28,7 @@ class Member(
     var name: String = name
         private set
 
-    var nickname: String = name
+    var nickname: String = nickname
         private set
 
     var phone: String? = null
