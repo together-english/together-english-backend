@@ -6,7 +6,7 @@ import com.together_english.deiz.data.member.dto.SignInRequest
 import com.together_english.deiz.data.member.dto.SignInResponse
 import com.together_english.deiz.data.member.dto.SignUpRequest
 import com.together_english.deiz.data.member.entity.Member
-import com.together_english.deiz.data.member.repository.MemberRepository
+import com.together_english.deiz.repository.MemberRepository
 import com.together_english.deiz.security.util.JwtUtil
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder

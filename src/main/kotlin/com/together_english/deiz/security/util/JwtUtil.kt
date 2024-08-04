@@ -1,7 +1,7 @@
 package com.together_english.deiz.security.util
 
 import com.together_english.deiz.data.JwtToken
-import com.together_english.deiz.data.member.repository.MemberRepository
+import com.together_english.deiz.repository.MemberRepository
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import org.slf4j.LoggerFactory

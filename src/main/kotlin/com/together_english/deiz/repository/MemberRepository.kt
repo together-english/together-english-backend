@@ -1,4 +1,4 @@
-package com.together_english.deiz.data.member.repository
+package com.together_english.deiz.repository
 
 import com.together_english.deiz.data.member.entity.Member
 import org.springframework.data.jpa.repository.JpaRepository

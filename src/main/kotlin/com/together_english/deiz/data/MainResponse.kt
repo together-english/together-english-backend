@@ -9,7 +9,7 @@ data class MainResponse<T>(
         val status: String,
         @Schema(description = "응답 메시지", example = "Operation completed successfully.")
         val message: String,
-        val data: T?
+        val data: T? = null
 ) {
         companion object {
                 fun <T> getSuccessResponse(data: T? = null): MainResponse<T> {

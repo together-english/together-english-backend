@@ -1,6 +1,6 @@
 package com.together_english.deiz.security.service
 
-import com.together_english.deiz.data.member.repository.MemberRepository
+import com.together_english.deiz.repository.MemberRepository
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
