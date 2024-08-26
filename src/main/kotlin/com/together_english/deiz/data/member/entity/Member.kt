@@ -2,6 +2,7 @@ package com.together_english.deiz.data.member.entity
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.together_english.deiz.common.base.BaseEntity
+import com.together_english.deiz.data.member.Gender
 import com.together_english.deiz.data.member.Role
 import jakarta.persistence.*
 import org.springframework.security.core.GrantedAuthority
@@ -18,7 +19,9 @@ class Member(
         @Column(nullable = false, unique = true)
         val email: String,
         hashedPassword: String,
-        profile: String?
+        profile: String?,
+        gender: Gender = Gender.NO,
+        age: Int = 0
 ): BaseEntity(), UserDetails {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     var hashedPassword: String = hashedPassword
@@ -35,6 +38,12 @@ class Member(
         private set
 
     var profile: String? = profile
+        private set
+
+    var age: Int = age
+        private set
+
+    var gender = gender
         private set
 
     var valid: Boolean = true

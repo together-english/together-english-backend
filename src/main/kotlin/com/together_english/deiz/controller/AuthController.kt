@@ -5,6 +5,7 @@ import com.together_english.deiz.data.MainResponse
 import com.together_english.deiz.data.MainResponse.Companion.getSuccessResponse
 import com.together_english.deiz.data.member.dto.SignUpRequest
 import com.together_english.deiz.data.member.dto.SignInRequest
+import com.together_english.deiz.data.member.dto.SignInResponse
 import com.together_english.deiz.service.AuthService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -39,7 +40,7 @@ class AuthController(
         ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data.")
     ])
     @PostMapping("/sign-in")
-    fun signIn(@Valid @RequestBody signInRequest: SignInRequest): ResponseEntity<MainResponse<JwtToken>> {
+    fun signIn(@Valid @RequestBody signInRequest: SignInRequest): ResponseEntity<MainResponse<SignInResponse>> {
         val token = authService.signIn(signInRequest)
         return ResponseEntity.ok(getSuccessResponse(token))
     }

@@ -17,5 +17,5 @@ abstract class BaseEntity {
 
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
-    var updateAt: LocalDateTime? = null
+    var updatedAt: LocalDateTime? = null
 }
