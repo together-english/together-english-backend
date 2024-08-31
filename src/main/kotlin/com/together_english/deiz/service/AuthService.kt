@@ -6,6 +6,7 @@ import com.together_english.deiz.data.member.dto.SignInRequest
 import com.together_english.deiz.data.member.dto.SignInResponse
 import com.together_english.deiz.data.member.dto.SignUpRequest
 import com.together_english.deiz.data.member.entity.Member
+import com.together_english.deiz.exception.UserAlreadyExistException
 import com.together_english.deiz.repository.MemberRepository
 import com.together_english.deiz.security.util.JwtUtil
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -20,6 +21,9 @@ class AuthService(
 ) {
 
     fun signUp(signUpRequest: SignUpRequest) {
+        if (memberRepository.findByEmail(signUpRequest.email).isPresent) {
+            throw UserAlreadyExistException()
+        }
         val encodedPassword = passwordEncoder.encode(signUpRequest.password)
         val member = Member(
                 name = signUpRequest.name,

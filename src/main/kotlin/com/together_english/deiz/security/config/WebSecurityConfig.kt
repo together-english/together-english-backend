@@ -4,6 +4,8 @@ import com.together_english.deiz.security.filter.JwtAuthenticationFilter
 import com.together_english.deiz.security.util.CustomAuthenticationEntryPoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
@@ -12,18 +14,22 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.web.cors.CorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig(
-        private val jwtAuthenticaitonFilter: JwtAuthenticationFilter
+        private val jwtAuthenticaitonFilter: JwtAuthenticationFilter,
+        private var corsConfigurationSource: CorsConfigurationSource
 ) {
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http {
+            cors { corsConfigurationSource = corsConfigurationSource}
             authorizeHttpRequests {
                 authorize("/", permitAll)
+                authorize("/auth/**", permitAll)
                 authorize("/h2-console/**", permitAll)
                 authorize("/swagger-ui/**", permitAll)
                 authorize("api-docs/**", permitAll)

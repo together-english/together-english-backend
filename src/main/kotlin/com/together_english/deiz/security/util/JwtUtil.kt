@@ -6,8 +6,6 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
@@ -18,8 +16,7 @@ class JwtUtil(
         @Value("\${jwt.secret}") private val secret: String,
         @Value("\${jwt.accessExpiration}") val accessExpiration: Long,
         @Value("\${jwt.refreshExpiration}") val refreshExpiration: Long,
-        private val memberRepository: MemberRepository,
-        private val userDetailsService: UserDetailsService
+        private val memberRepository: MemberRepository
 ) {
 
     private val LOGGER = LoggerFactory.getLogger(JwtUtil::class.java)
@@ -70,19 +67,14 @@ class JwtUtil(
         return !claimsJws.payload.expiration.before(Date())
     }
 
-    fun getAuthentication(token: String): Authentication {
+    fun verifyAndextractUsername(token: String): String {
         LOGGER.info("get authentication 시작")
         val claimsJws = Jwts.parser()
                 .verifyWith(Keys.hmacShaKeyFor(secret.toByteArray()))
                 .build()
                 .parseSignedClaims(token)
 
-        val email = claimsJws.payload["email"] as String
-
-        val userDetails = userDetailsService.loadUserByUsername(email)
-
-        return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
-
+        return claimsJws.payload["email"] as String
     }
 
 }

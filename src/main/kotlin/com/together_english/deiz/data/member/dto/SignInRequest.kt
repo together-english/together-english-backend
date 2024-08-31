@@ -1,9 +1,11 @@
 package com.together_english.deiz.data.member.dto
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotEmpty
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Schema(description = "로그인 요청")
 data class SignInRequest(
         @field:Email(message = "Email should be valid")

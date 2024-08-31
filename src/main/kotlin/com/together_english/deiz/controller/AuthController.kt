@@ -14,10 +14,11 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.aspectj.weaver.ast.Not
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @Tag(name = "인증 API", description = "유저 인증을 위한 API")
 class AuthController(
         private val authService: AuthService
@@ -28,7 +29,7 @@ class AuthController(
         ApiResponse(responseCode = "200", description = "Operation completed successfully."),
         ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data.")
     ])
-    @PostMapping("/sign-up")
+    @PostMapping("/signup")
     fun signUp(@Valid @RequestBody signUpRequest: SignUpRequest): ResponseEntity<MainResponse<Nothing>> {
         authService.signUp(signUpRequest)
         return ResponseEntity.ok(getSuccessResponse())
@@ -39,9 +40,9 @@ class AuthController(
         ApiResponse(responseCode = "200", description = "Operation completed successfully."),
         ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data.")
     ])
-    @PostMapping("/sign-in")
+    @PostMapping("/login")
     fun signIn(@Valid @RequestBody signInRequest: SignInRequest): ResponseEntity<MainResponse<SignInResponse>> {
-        val token = authService.signIn(signInRequest)
-        return ResponseEntity.ok(getSuccessResponse(token))
+        val signInResponse = authService.signIn(signInRequest)
+        return ResponseEntity.ok(getSuccessResponse(signInResponse))
     }
 }

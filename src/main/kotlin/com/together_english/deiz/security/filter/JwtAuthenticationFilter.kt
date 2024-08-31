@@ -5,9 +5,9 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
@@ -26,7 +26,10 @@ class JwtAuthenticationFilter(
             try {
                 val token = authHeader.substring(7)
                 if (jwtUtil.validateToken(token)) {
-                    val authentication = jwtUtil.getAuthentication(token)
+                    val username = jwtUtil.verifyAndextractUsername(token)
+                    val userDetails = userDetailsService.loadUserByUsername(username)
+                    val authentication
+                    = UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
                     SecurityContextHolder.getContext().authentication = authentication
                 }
             } catch (e: Exception) {
