@@ -11,18 +11,21 @@ import org.springframework.security.core.userdetails.UserDetails
 @Entity
 @Table(name = "members")
 class Member(
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long? = null,
         name: String,
         nickname: String,
-        @Column(nullable = false, unique = true)
-        val email: String,
+        email: String,
         hashedPassword: String,
         profile: String?,
         gender: Gender = Gender.NO,
         age: Int = 0
 ): BaseEntity(), UserDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null
+
+    @Column(nullable = false, unique = true)
+    val email: String = email
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     var hashedPassword: String = hashedPassword
         private set
@@ -49,7 +52,7 @@ class Member(
     var valid: Boolean = true
         private set
 
-    @ElementCollection(targetClass = Role::class, fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = Role::class, fetch = FetchType.LAZY)
     @CollectionTable(name = "user_role", joinColumns = [JoinColumn(name = "user_id")])
     @Enumerated(EnumType.STRING)
     var roles: MutableList<Role> = mutableListOf(Role.USER)
