@@ -1,20 +1,17 @@
 package com.together_english.deiz.controller
 
-import com.together_english.deiz.data.JwtToken
-import com.together_english.deiz.data.MainResponse
-import com.together_english.deiz.data.MainResponse.Companion.getSuccessResponse
-import com.together_english.deiz.data.member.dto.SignUpRequest
-import com.together_english.deiz.data.member.dto.SignInRequest
-import com.together_english.deiz.data.member.dto.SignInResponse
+import com.together_english.deiz.model.common.MainResponse
+import com.together_english.deiz.model.common.MainResponse.Companion.getSuccessResponse
+import com.together_english.deiz.model.member.dto.SignUpRequest
+import com.together_english.deiz.model.member.dto.SignInRequest
+import com.together_english.deiz.model.member.dto.SignInResponse
 import com.together_english.deiz.service.AuthService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import org.aspectj.weaver.ast.Not
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController

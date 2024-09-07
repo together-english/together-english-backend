@@ -1,6 +1,6 @@
-package com.together_english.deiz.data.member.dto
+package com.together_english.deiz.model.member.dto
 
-import com.together_english.deiz.data.member.entity.Member
+import com.together_english.deiz.model.member.entity.Member
 import io.swagger.v3.oas.annotations.media.Schema
 
 @Schema(description = "맴버 DTO")

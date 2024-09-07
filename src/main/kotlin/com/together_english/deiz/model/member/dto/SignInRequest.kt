@@ -1,4 +1,4 @@
-package com.together_english.deiz.data.member.dto
+package com.together_english.deiz.model.member.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.swagger.v3.oas.annotations.media.Schema

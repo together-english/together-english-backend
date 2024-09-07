@@ -1,4 +1,4 @@
-package com.together_english.deiz.data.member
+package com.together_english.deiz.model.member
 
 import org.springframework.security.core.GrantedAuthority
 

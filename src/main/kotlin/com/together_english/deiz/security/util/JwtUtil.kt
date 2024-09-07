@@ -1,12 +1,11 @@
 package com.together_english.deiz.security.util
 
-import com.together_english.deiz.data.JwtToken
+import com.together_english.deiz.model.common.JwtToken
 import com.together_english.deiz.repository.MemberRepository
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
 import java.util.*

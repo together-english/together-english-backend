@@ -1,4 +1,4 @@
-package com.together_english.deiz.data.member.dto
+package com.together_english.deiz.model.member.dto
 
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotEmpty

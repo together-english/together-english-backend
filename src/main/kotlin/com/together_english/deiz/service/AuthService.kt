@@ -1,11 +1,10 @@
 package com.together_english.deiz.service
 
-import com.together_english.deiz.data.JwtToken
-import com.together_english.deiz.data.member.dto.MemberDto
-import com.together_english.deiz.data.member.dto.SignInRequest
-import com.together_english.deiz.data.member.dto.SignInResponse
-import com.together_english.deiz.data.member.dto.SignUpRequest
-import com.together_english.deiz.data.member.entity.Member
+import com.together_english.deiz.model.member.dto.MemberDto
+import com.together_english.deiz.model.member.dto.SignInRequest
+import com.together_english.deiz.model.member.dto.SignInResponse
+import com.together_english.deiz.model.member.dto.SignUpRequest
+import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.exception.UserAlreadyExistException
 import com.together_english.deiz.repository.MemberRepository
 import com.together_english.deiz.security.util.JwtUtil

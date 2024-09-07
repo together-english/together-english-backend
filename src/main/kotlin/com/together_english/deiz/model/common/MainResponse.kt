@@ -1,4 +1,4 @@
-package com.together_english.deiz.data
+package com.together_english.deiz.model.common
 
 import com.together_english.deiz.common.ApiConstants
 import io.swagger.v3.oas.annotations.media.Schema

@@ -1,15 +1,15 @@
-package com.together_english.deiz.data.member.entity
+package com.together_english.deiz.model.member.entity
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.together_english.deiz.common.base.BaseEntity
-import com.together_english.deiz.data.member.Gender
-import com.together_english.deiz.data.member.Role
+import com.together_english.deiz.model.circle.Circle
+import com.together_english.deiz.model.member.Gender
+import com.together_english.deiz.model.member.Role
 import jakarta.persistence.*
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 @Entity
-@Table(name = "members")
 class Member(
         name: String,
         nickname: String,
@@ -45,6 +45,9 @@ class Member(
 
     var gender = gender
         private set
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "leader")
+    val mutableCircles: MutableList<Circle> = mutableListOf()
 
     var valid: Boolean = true
         private set
