@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 @Schema(description = "맴버 DTO")
 class MemberDto(
         @Schema(description = "ID", example = "323432")
-        val id: Long,
+        val id: String,
         @Schema(description = "이름", example = "김철수")
         val name: String,
         @Schema(description = "이메일", example = "test@test.com")
@@ -19,7 +19,7 @@ class MemberDto(
         companion object {
                 fun memberToDto(member: Member): MemberDto {
                         return MemberDto(
-                                id = member.id!!,
+                                id = member.id.toString(),
                                 name = member.name,
                                 email = member.email,
                                 nickname = member.nickname,

@@ -19,9 +19,6 @@ class Member(
         gender: Gender = Gender.NO,
         age: Int = 0
 ): BaseEntity(), UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
 
     @Column(nullable = false, unique = true)
     val email: String = email
