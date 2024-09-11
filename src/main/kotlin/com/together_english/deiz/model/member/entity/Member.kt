@@ -15,25 +15,28 @@ class Member(
         nickname: String,
         email: String,
         hashedPassword: String,
-        profile: String?,
+        profile: String? = null,
         gender: Gender = Gender.NO,
         age: Int = 0
 ): BaseEntity(), UserDetails {
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 64)
     val email: String = email
 
+    @Column(length = 64)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     var hashedPassword: String = hashedPassword
         private set
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 128)
     var name: String = name
         private set
 
+    @Column(unique = true, length = 128)
     var nickname: String = nickname
         private set
 
+    @Column(length = 64)
     var phone: String? = null
         private set
 
@@ -43,6 +46,7 @@ class Member(
     var age: Int = age
         private set
 
+    @Column(length = 8)
     var gender = gender
         private set
 

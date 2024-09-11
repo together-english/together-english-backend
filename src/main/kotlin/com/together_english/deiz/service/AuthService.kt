@@ -19,10 +19,19 @@ class AuthService(
         private val jwtUtil: JwtUtil
 ) {
 
-    fun signUp(signUpRequest: SignUpRequest) {
-        if (memberRepository.findByEmail(signUpRequest.email).isPresent) {
-            throw UserAlreadyExistException()
+    private fun checkUserExistsByEmailOrNickname(email: String, nickname: String?) {
+        if (memberRepository.findByEmail(email).isPresent) {
+            throw UserAlreadyExistException("해당 이메일을 가진 유저가 이미 존재합니다.")
         }
+        if (nickname != null) {
+            if (memberRepository.findByNickname(nickname).isPresent) {
+                throw UserAlreadyExistException("해당 닉네임을 가진 유저가 이미 존재합니다.")
+            }
+        }
+    }
+
+    fun signUp(signUpRequest: SignUpRequest) {
+        checkUserExistsByEmailOrNickname(signUpRequest.email, signUpRequest.nickname)
         val encodedPassword = passwordEncoder.encode(signUpRequest.password)
         val member = Member(
                 name = signUpRequest.name,
@@ -39,7 +48,7 @@ class AuthService(
             UsernameNotFoundException("해당 유저가 존재하지 않습니다.")
         }
         if (!passwordEncoder.matches(signInRequest.password, member.password)) {
-            throw IllegalArgumentException("Invalid email or password")
+            throw IllegalArgumentException("비밀번호가 일치하지 않습니다.")
         }
         return SignInResponse(
                 memberDto = MemberDto.memberToDto(member),
