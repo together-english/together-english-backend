@@ -28,15 +28,15 @@ class Member(
     var hashedPassword: String = hashedPassword
         private set
 
-    @Column(nullable = false, length = 128)
+    @Column(nullable = false, length = 64)
     var name: String = name
         private set
 
-    @Column(unique = true, length = 128)
+    @Column(unique = true, length = 64)
     var nickname: String = nickname
         private set
 
-    @Column(length = 64)
+    @Column(length = 32)
     var phone: String? = null
         private set
 
@@ -46,7 +46,8 @@ class Member(
     var age: Int = age
         private set
 
-    @Column(length = 8)
+    @Column(length = 4)
+    @Enumerated(EnumType.STRING)
     var gender = gender
         private set
 

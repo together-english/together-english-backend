@@ -45,7 +45,7 @@ class AuthService(
 
     fun signIn(signInRequest: SignInRequest): SignInResponse {
         val member = memberRepository.findByEmail(signInRequest.email).orElseThrow {
-            UsernameNotFoundException("해당 유저가 존재하지 않습니다.")
+            UsernameNotFoundException("이메일이 잘못 되었습니다.")
         }
         if (!passwordEncoder.matches(signInRequest.password, member.password)) {
             throw IllegalArgumentException("비밀번호가 일치하지 않습니다.")
