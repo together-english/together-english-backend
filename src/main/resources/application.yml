@@ -1,25 +1,3 @@
-spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
-      settings:
-        web-allow-others: true
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-
-jwt:
-  secret: fweuiorfhjiweofji2390ru348902feruiodfh89w3ruf89023ruj3902rfu902w3rf9023urf900
-  accessExpiration: 86400 # 1 day
-  refreshExpiration: 604800 # 1 week
-
 springdoc:
   api-docs:
     path: /api-docs
