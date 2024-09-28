@@ -33,7 +33,7 @@ class JwtUtil(
                 .header().add("typ", "access").and()
                 .claims().add("email", email).and()
                 .issuedAt(Date())
-                .expiration(Date(System.currentTimeMillis() + accessExpiration))
+                .expiration(Date(System.currentTimeMillis() + accessExpiration * 1000))
                 .signWith(Keys.hmacShaKeyFor(secret.toByteArray()))
                 .compact()
 
@@ -45,7 +45,7 @@ class JwtUtil(
                 .header().add("typ", "refresh").and()
                 .claims().add("email", email).and()
                 .issuedAt(Date())
-                .expiration(Date(System.currentTimeMillis() + refreshExpiration))
+                .expiration(Date(System.currentTimeMillis() + refreshExpiration * 1000))
                 .signWith(Keys.hmacShaKeyFor(secret.toByteArray()))
                 .compact()
     }

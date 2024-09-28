@@ -43,6 +43,9 @@ class Member(
     var profile: String? = profile
         private set
 
+    var profileOriginName: String? = null
+        private set
+
     var age: Int = age
         private set
 
@@ -57,7 +60,7 @@ class Member(
     var valid: Boolean = true
         private set
 
-    @ElementCollection(targetClass = Role::class, fetch = FetchType.LAZY)
+    @ElementCollection(targetClass = Role::class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = [JoinColumn(name = "user_id")])
     @Enumerated(EnumType.STRING)
     var roles: MutableList<Role> = mutableListOf(Role.USER)
@@ -72,5 +75,10 @@ class Member(
 
     override fun getUsername(): String {
         return this.email
+    }
+
+    fun updateProfile(updatedProfile: String, originFileName: String) {
+        this.profile = updatedProfile
+        this.profileOriginName = originFileName
     }
 }

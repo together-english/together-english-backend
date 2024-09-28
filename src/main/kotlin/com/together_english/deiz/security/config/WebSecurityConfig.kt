@@ -1,5 +1,6 @@
 package com.together_english.deiz.security.config
 
+import com.together_english.deiz.model.member.Role
 import com.together_english.deiz.security.filter.JwtAuthenticationFilter
 import com.together_english.deiz.security.util.CustomAuthenticationEntryPoint
 import org.springframework.context.annotation.Bean
@@ -30,6 +31,7 @@ class WebSecurityConfig(
             authorizeHttpRequests {
                 authorize("/", permitAll)
                 authorize("/auth/**", permitAll)
+                authorize("/member/**", hasAuthority(Role.USER.authority))
                 authorize("/h2-console/**", permitAll)
                 authorize("/swagger-ui/**", permitAll)
                 authorize("api-docs/**", permitAll)
