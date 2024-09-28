@@ -23,7 +23,6 @@ class S3ImageUploadService(
         metadata.contentLength = file.size
 
         amazonS3Client.putObject(bucket, fileName, file.inputStream, metadata)
-
         return amazonS3Client.getUrl(bucket, fileName).toString() // 업로드된 파일의 URL 반환
     }
 

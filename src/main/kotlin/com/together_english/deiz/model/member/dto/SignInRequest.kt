@@ -14,6 +14,6 @@ data class SignInRequest(
         val email: String,
 
         @field:NotEmpty(message = "Password is required")
-        @Schema(description = "패스워드", example = "password123")
+        @Schema(description = "패스워드", example = "securePassword123")
         val password: String
 )

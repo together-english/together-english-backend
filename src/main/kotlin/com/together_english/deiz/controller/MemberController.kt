@@ -45,4 +45,4 @@ class MemberController(
         val updatedProfile = memberService.updateMemberProfile(file, member.email)
         return ResponseEntity.ok(MainResponse.getSuccessResponse(updatedProfile))
     }
-}
+}   
