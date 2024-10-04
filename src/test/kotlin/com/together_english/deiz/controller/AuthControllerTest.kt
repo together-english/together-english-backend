@@ -2,7 +2,6 @@ package com.together_english.deiz.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.together_english.deiz.exception.GlobalHandler
-import com.together_english.deiz.exception.UserAlreadyExistException
 import com.together_english.deiz.model.member.dto.SignUpRequest
 import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.repository.MemberRepository
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.doThrow
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.http.MediaType
@@ -56,13 +54,16 @@ class AuthControllerTest {
             name: String = "테스트",
             nickname: String = "닉네임",
             email: String = "test@example.com",
-            password: String = "password123"
+            password: String = "password123",
+
     ): SignUpRequest {
         return SignUpRequest(
                 name = name,
                 nickname = nickname,
                 email = email,
-                password = password
+                password = password,
+                isTermsAgreed = true,
+                isPrivacyAgreed = true
         )
     }
 
@@ -70,13 +71,17 @@ class AuthControllerTest {
             name: String = "test",
             nickname: String = "test",
             email: String = "test@test.com",
-            password: String = "hashedPassword"
+            password: String = "hashedPassword",
+            isTermsAgreed: Boolean = true,
+            isPrivacyAgreed: Boolean = true
     ): Member {
         return Member(
                 name = name,
                 nickname = nickname,
                 email = email,
-                hashedPassword = password
+                hashedPassword = password,
+                isTermsAgreed = isTermsAgreed,
+                isPrivacyAgreed = isPrivacyAgreed
         )
     }
 

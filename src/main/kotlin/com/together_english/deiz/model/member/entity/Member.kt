@@ -17,7 +17,10 @@ class Member(
         hashedPassword: String,
         profile: String? = null,
         gender: Gender = Gender.NO,
-        age: Int = 0
+        age: Int = 0,
+        isTermsAgreed: Boolean,
+        isPrivacyAgreed: Boolean,
+        isMarketingAgreed: Boolean = false
 ): BaseEntity(), UserDetails {
 
     @Column(nullable = false, unique = true, length = 64)
@@ -49,6 +52,12 @@ class Member(
     var age: Int = age
         private set
 
+    val isTermsAgreed = isTermsAgreed
+
+    val isPrivacyAgreed = isPrivacyAgreed
+
+    var isMarketingAgreed = isMarketingAgreed
+
     @Column(length = 4)
     @Enumerated(EnumType.STRING)
     var gender = gender
@@ -64,6 +73,7 @@ class Member(
     @CollectionTable(name = "user_role", joinColumns = [JoinColumn(name = "user_id")])
     @Enumerated(EnumType.STRING)
     var roles: MutableList<Role> = mutableListOf(Role.USER)
+
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return this.roles
     }

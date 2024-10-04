@@ -38,14 +38,17 @@ class AuthService(
                 email = signUpRequest.email,
                 hashedPassword = encodedPassword,
                 profile = signUpRequest.profile,
-                nickname = signUpRequest.nickname ?: signUpRequest.name
+                nickname = signUpRequest.nickname ?: signUpRequest.name,
+                isPrivacyAgreed = signUpRequest.isPrivacyAgreed,
+                isTermsAgreed = signUpRequest.isTermsAgreed,
+                isMarketingAgreed = signUpRequest.isMarketingAgreed
         )
         memberRepository.save(member)
     }
 
     fun signIn(signInRequest: SignInRequest): SignInResponse {
         val member = memberRepository.findByEmail(signInRequest.email).orElseThrow {
-            UsernameNotFoundException("이메일이 잘못 되었습니다.")
+            UsernameNotFoundException("없는 계정입니다.")
         }
         if (!passwordEncoder.matches(signInRequest.password, member.password)) {
             throw IllegalArgumentException("비밀번호가 일치하지 않습니다.")

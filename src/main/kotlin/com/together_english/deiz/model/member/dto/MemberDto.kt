@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 
 @Schema(description = "맴버 DTO")
 class MemberDto(
-        @Schema(description = "ID", example = "323432")
+        @Schema(description = "멤버ID", example = "323432")
         val id: String,
         @Schema(description = "이름", example = "김철수")
         val name: String,
