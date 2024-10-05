@@ -1,16 +1,19 @@
 package com.together_english.deiz.service
 
+import com.together_english.deiz.exception.NicknameAlreadyInUseException
 import com.together_english.deiz.model.member.dto.MemberDto
 import com.together_english.deiz.model.member.dto.SignInRequest
 import com.together_english.deiz.model.member.dto.SignInResponse
 import com.together_english.deiz.model.member.dto.SignUpRequest
 import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.exception.UserAlreadyExistException
+import com.together_english.deiz.exception.UserNotFoundException
 import com.together_english.deiz.repository.MemberRepository
 import com.together_english.deiz.security.util.JwtUtil
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AuthService(
@@ -25,11 +28,12 @@ class AuthService(
         }
         if (nickname != null) {
             if (memberRepository.findByNickname(nickname).isPresent) {
-                throw UserAlreadyExistException("해당 닉네임을 가진 유저가 이미 존재합니다.")
+                throw NicknameAlreadyInUseException()
             }
         }
     }
 
+    @Transactional
     fun signUp(signUpRequest: SignUpRequest) {
         checkUserExistsByEmailOrNickname(signUpRequest.email, signUpRequest.nickname)
         val encodedPassword = passwordEncoder.encode(signUpRequest.password)
@@ -48,11 +52,9 @@ class AuthService(
 
     fun signIn(signInRequest: SignInRequest): SignInResponse {
         val member = memberRepository.findByEmail(signInRequest.email).orElseThrow {
-            UsernameNotFoundException("없는 계정입니다.")
+            UserNotFoundException()
         }
-        if (!passwordEncoder.matches(signInRequest.password, member.password)) {
-            throw IllegalArgumentException("비밀번호가 일치하지 않습니다.")
-        }
+        member.checkPasswordIsMatched(signInRequest.password, passwordEncoder)
         return SignInResponse(
                 memberDto = MemberDto.memberToDto(member),
                 jwtToken = jwtUtil.generateAllToken(member.email)

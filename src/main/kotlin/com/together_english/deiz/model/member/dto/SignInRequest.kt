@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotEmpty
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Schema(description = "로그인 요청")
 data class SignInRequest(
-        @field:Email(message = "Email should be valid")
         @field:NotEmpty(message = "Email is required")
         @Schema(description = "이메일", example = "paka@example.com")
         val email: String,

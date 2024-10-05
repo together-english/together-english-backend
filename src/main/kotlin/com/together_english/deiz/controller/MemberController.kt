@@ -1,7 +1,9 @@
 package com.together_english.deiz.controller
 
 import com.together_english.deiz.model.common.MainResponse
+import com.together_english.deiz.model.member.dto.MyPageResponse
 import com.together_english.deiz.model.member.dto.MyPageUpdateRequest
+import com.together_english.deiz.model.member.dto.SignUpRequest
 import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.security.service.MemberService
 import io.swagger.v3.oas.annotations.Hidden
@@ -9,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
-import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -53,11 +54,12 @@ class MemberController(
         ApiResponse(responseCode = "200", description = "Operation completed successfully."),
         ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data.")
     ])
-    @GetMapping
+    @GetMapping("/my")
     fun getMyInfo(
             @Parameter(hidden = true) member: Member
-    ) {
-
+    ) : ResponseEntity<MainResponse<MyPageResponse>> {
+        val response: MyPageResponse = memberService.getMyInfo(member.email)
+        return ResponseEntity.ok(MainResponse.getSuccessResponse(response))
     }
 
     @Operation(
@@ -69,11 +71,12 @@ class MemberController(
         ApiResponse(responseCode = "200", description = "Operation completed successfully."),
         ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data.")
     ])
-    @PostMapping
+    @PostMapping("/my")
     fun updateMyInfo(
-            @RequestBody request: MyPageUpdateRequest,
-            @Parameter(hidden = true) member: Member
-    ) {
-
+            @Parameter(hidden = true) member: Member,
+            @RequestBody request: MyPageUpdateRequest
+    ) : ResponseEntity<MainResponse<Nothing>> {
+        memberService.updateMyInfo(member.email, request)
+        return ResponseEntity.ok(MainResponse.getSuccessResponse())
     }
 }

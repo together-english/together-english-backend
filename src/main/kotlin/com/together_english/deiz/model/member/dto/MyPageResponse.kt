@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 
 @Schema(description = "마이 페이지 조회 응답")
 class MyPageResponse (
-        @Schema(description = "멤버 ID", example = "323432")
+        @Schema(description = "멤버 ID", example = "FWEHFEWD32532332")
         val id: String,
         @Schema(description = "이름", example = "김철수")
         val name: String,

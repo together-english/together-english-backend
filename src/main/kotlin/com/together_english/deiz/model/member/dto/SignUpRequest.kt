@@ -8,20 +8,20 @@ import io.swagger.v3.oas.annotations.media.Schema
 @Schema(description = "회원가입 요청")
 data class SignUpRequest(
 
-        @field:NotEmpty(message = "Name is required")
+        @field:NotEmpty(message = "이름을 입력해주세요")
         @Schema(description = "이름", example = "파카")
         val name: String,
 
         @Schema(description = "닉네임", example = "제트")
         val nickname: String?,
 
-        @field:Email(message = "Email should be valid")
-        @field:NotEmpty(message = "Email is required")
+        @field:Email(message = "유효한 이메일이 아닙니다.")
+        @field:NotEmpty(message = "이메일 값을 체워주세요")
         @Schema(description = "이메일", example = "paka@example.com")
         val email: String,
 
-        @field:NotEmpty(message = "Password is required")
-        @field:Size(min = 6, message = "Password should have at least 6 characters")
+        @field:NotEmpty(message = "패스워드를 입력해주세요")
+        @field:Size(min = 6, message = "패스워드는 적어도 6글자 이상이어야 합니다.")
         @Schema(description = "패스워드", example = "securePassword123")
         val password: String,
 
