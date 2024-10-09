@@ -21,8 +21,12 @@ repositories {
 }
 
 extra["snippetsDir"] = file("build/generated-snippets")
+val jdslVersion = "3.5.2"
 
 dependencies {
+	implementation("com.linecorp.kotlin-jdsl:jpql-dsl:$jdslVersion")
+	implementation("com.linecorp.kotlin-jdsl:jpql-render:$jdslVersion")
+	implementation("com.linecorp.kotlin-jdsl:spring-data-jpa-support:$jdslVersion")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -45,6 +49,7 @@ dependencies {
 	testImplementation("org.mockito:mockito-core:5.2.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
+
 
 allOpen {
 	annotation("javax.persistence.Entity")
