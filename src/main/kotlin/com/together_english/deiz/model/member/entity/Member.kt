@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.together_english.deiz.common.base.BaseEntity
 import com.together_english.deiz.exception.NotMatchedPasswordException
 import com.together_english.deiz.model.circle.Circle
+import com.together_english.deiz.model.circle.FavoriteCircle
 import com.together_english.deiz.model.member.Gender
 import com.together_english.deiz.model.member.Role
 import com.together_english.deiz.model.member.dto.MyPageResponse
@@ -55,6 +56,9 @@ class Member(
 
     var age: Int = age
         private set
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "member")
+    var favoriteCircle: MutableList<FavoriteCircle> = mutableListOf()
 
     val isTermsAgreed = isTermsAgreed
 

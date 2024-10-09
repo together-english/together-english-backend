@@ -73,7 +73,10 @@ class Circle(
         protected set
 
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "circle")
-    var circleSchedule: MutableList<CircleSchedule> = mutableListOf()
+    var circleSchedules: MutableList<CircleSchedule> = mutableListOf()
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "circle")
+    var favoriteCircle: MutableList<FavoriteCircle> = mutableListOf()
 
     var totalView: Int = 0
         protected set
