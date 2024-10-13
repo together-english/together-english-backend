@@ -1,10 +1,9 @@
-package com.together_english.deiz.security.service
+package com.together_english.deiz.service
 
 import com.together_english.deiz.exception.NicknameAlreadyInUseException
 import com.together_english.deiz.exception.UserNotFoundException
 import com.together_english.deiz.model.member.dto.MyPageResponse
 import com.together_english.deiz.model.member.dto.MyPageUpdateRequest
-import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.repository.MemberRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service

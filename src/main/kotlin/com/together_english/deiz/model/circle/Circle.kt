@@ -12,7 +12,7 @@ class Circle(
         name: String,
         englishLevel: EnglishLevel,
         city: City,
-        thumbnail: String? = null,
+        thumbnailUrl: String? = null,
         introduction: String,
         address: String? = null,
         capacity: Int,
@@ -39,7 +39,7 @@ class Circle(
         protected set
 
     @Column(length = 255)
-    var thumbnail: String? = thumbnail
+    var thumbnailUrl: String? = thumbnailUrl
         protected set
 
     @Column(length = 3000)

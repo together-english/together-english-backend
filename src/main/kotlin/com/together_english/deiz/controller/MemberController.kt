@@ -3,14 +3,10 @@ package com.together_english.deiz.controller
 import com.together_english.deiz.model.common.MainResponse
 import com.together_english.deiz.model.member.dto.MyPageResponse
 import com.together_english.deiz.model.member.dto.MyPageUpdateRequest
-import com.together_english.deiz.model.member.dto.SignUpRequest
 import com.together_english.deiz.model.member.entity.Member
-import com.together_english.deiz.security.service.MemberService
-import io.swagger.v3.oas.annotations.Hidden
+import com.together_english.deiz.service.MemberService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement

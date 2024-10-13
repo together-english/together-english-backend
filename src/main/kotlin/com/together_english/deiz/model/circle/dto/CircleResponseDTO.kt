@@ -31,7 +31,7 @@ data class CircleResponseDTO(
                     name = circle.name,
                     englishLevel = circle.englishLevel,
                     city = circle.city,
-                    thumbnail = circle.thumbnail,
+                    thumbnail = circle.thumbnailUrl,
                     introduction = circle.introduction,
                     address = circle.address,
                     capacity = circle.capacity.toInt(),

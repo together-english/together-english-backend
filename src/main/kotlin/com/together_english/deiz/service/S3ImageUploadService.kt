@@ -1,4 +1,4 @@
-package com.together_english.deiz.security.service
+package com.together_english.deiz.service
 
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.ObjectMetadata
