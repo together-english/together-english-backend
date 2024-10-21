@@ -18,6 +18,6 @@ enum class City(private val displayName: String) {
     ONLINE("온라인");
 
     override fun toString(): String {
-        return displayName
+        return name
     }
 }

@@ -40,7 +40,6 @@ data class CircleCreateRequest (
         @Size(min = 1, message = "스케줄은 최소 하나 이상 입력해야 합니다.")
         val circleSchedules: List<CircleScheduleDto>,
 
-        val thumbnail: MultipartFile? = null
 )
 {
     fun toEntity(leader: Member, thumbnailUrl: String?): Circle {

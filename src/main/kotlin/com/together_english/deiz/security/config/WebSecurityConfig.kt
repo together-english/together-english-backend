@@ -5,6 +5,7 @@ import com.together_english.deiz.security.filter.JwtAuthenticationFilter
 import com.together_english.deiz.security.util.CustomAuthenticationEntryPoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -32,6 +33,7 @@ class WebSecurityConfig(
                 authorize("/", permitAll)
                 authorize("/auth/**", permitAll)
                 authorize("/member/**", hasAuthority(Role.USER.authority))
+                authorize(HttpMethod.POST,"/circle/**", hasAuthority(Role.USER.authority))
                 authorize("/h2-console/**", permitAll)
                 authorize("/swagger-ui/**", permitAll)
                 authorize("api-docs/**", permitAll)

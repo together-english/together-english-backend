@@ -14,10 +14,8 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 
 @RestController
@@ -36,12 +34,13 @@ class CircleController(
         ApiResponse(responseCode = "200", description = "Circle created successfully with ID: 2132"),
         ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data.")
     ])
-    @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE])
     fun createCircle(
-            @Valid @ModelAttribute request: CircleCreateRequest,
+            @Valid @RequestPart request: CircleCreateRequest,
+            @RequestPart(required = false) thumbnailFile: MultipartFile?,
             @Parameter(hidden = true) member: Member
     ): ResponseEntity<MainResponse<String>> {
-        val circleId = circleService.createCircleWithSchedule(request, member)
+        val circleId = circleService.createCircleWithSchedule(request, member, thumbnailFile)
         return ResponseEntity.ok(getSuccessResponse("Circle created successfully with ID: $circleId"))
     }
 }

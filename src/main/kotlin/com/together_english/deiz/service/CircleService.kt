@@ -6,6 +6,7 @@ import com.together_english.deiz.repository.CircleRepository
 import com.together_english.deiz.repository.CircleScheduleRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 
 @Service
 class CircleService(
@@ -15,8 +16,8 @@ class CircleService(
 ) {
 
     @Transactional
-    fun createCircleWithSchedule(request: CircleCreateRequest, member: Member): String {
-        val thumbnailUrl = request.thumbnail?.let { s3ImageUploadService.uploadFile(it) }
+    fun createCircleWithSchedule(request: CircleCreateRequest, member: Member, thumbnailFile: MultipartFile?): String {
+        val thumbnailUrl = thumbnailFile?.let { s3ImageUploadService.uploadFile(it) }
         val circle = request.toEntity(member, thumbnailUrl)
         circleRepository.save(circle)
 
