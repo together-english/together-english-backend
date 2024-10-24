@@ -83,4 +83,7 @@ class Circle(
 
     var weekView: Int = 0
         protected set
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "circle")
+    var circleComments: MutableList<CircleComment> = mutableListOf()
 }
