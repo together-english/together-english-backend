@@ -2,7 +2,6 @@ package com.together_english.deiz.model.circle.dto
 
 import com.together_english.deiz.model.circle.Circle
 import com.together_english.deiz.model.circle.CircleComment
-import com.together_english.deiz.model.circle.CommentStatus
 import com.together_english.deiz.model.member.entity.Member
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
@@ -20,7 +19,6 @@ data class CommentCreateRequest(
     fun toEntity(circle: Circle, member: Member): CircleComment {
         return CircleComment(
             content = this.content,
-            status = CommentStatus.REPORTED,
             member = member,
             circle = circle,
         )

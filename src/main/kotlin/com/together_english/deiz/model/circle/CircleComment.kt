@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull
 @Entity
 class CircleComment(
     content : String,
-    status : CommentStatus,
     circle : Circle,
     member : Member,
 ) : BaseEntity() {
@@ -20,7 +19,7 @@ class CircleComment(
     @Column(length = 50)
     @Enumerated(value = EnumType.STRING)
     @NotNull
-    var status: CommentStatus = status
+    var status: CommentStatus = CommentStatus.REPORTED
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "circle_id")
@@ -28,9 +27,13 @@ class CircleComment(
     val circle : Circle = circle
 
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "member_id")
     @NotNull
     val member : Member = member
+
+    fun deleteComment() {
+        status = CommentStatus.DELETED
+    }
 }
 
