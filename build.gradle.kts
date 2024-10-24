@@ -16,6 +16,9 @@ java {
 	sourceCompatibility = JavaVersion.VERSION_17
 }
 
+val activeProfile = System.getProperty("spring.profiles.active")?.takeIf { it.isNotBlank() } ?: "local"
+println("env: $activeProfile")
+
 repositories {
 	mavenCentral()
 }
@@ -55,6 +58,10 @@ allOpen {
 	annotation("javax.persistence.Entity")
 	annotation("javax.persistence.MappedSuperclass")
 	annotation("javax.persistence.Embeddable")
+}
+
+tasks.withType<JavaExec> {
+	systemProperty("spring.profiles.active", activeProfile)
 }
 
 tasks.withType<KotlinCompile> {
