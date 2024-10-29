@@ -9,7 +9,7 @@ import jakarta.persistence.*
 @Entity
 class Circle(
         leader: Member,
-        name: String,
+        title: String,
         englishLevel: EnglishLevel,
         city: City,
         thumbnailUrl: String? = null,
@@ -25,7 +25,7 @@ class Circle(
     val leader:Member = leader
 
     @Column(nullable = false, length = 255)
-    var name: String = name
+    var title: String = title
         protected set
 
     @Column(nullable = false, length = 32)
@@ -79,6 +79,9 @@ class Circle(
     var favoriteCircle: MutableList<FavoriteCircle> = mutableListOf()
 
     var totalView: Int = 0
+        protected set
+
+    var totalLike: Int = 0
         protected set
 
     var weekView: Int = 0

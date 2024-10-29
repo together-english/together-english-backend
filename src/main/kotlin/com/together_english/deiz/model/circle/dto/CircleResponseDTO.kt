@@ -10,7 +10,7 @@ import java.util.*
 
 data class CircleResponseDTO(
         val id: UUID,
-        val name: String,
+        val title: String,
         val englishLevel: EnglishLevel,
         val city: City,
         val thumbnail: String? = null,
@@ -28,7 +28,7 @@ data class CircleResponseDTO(
         fun fromEntity(circle: Circle): CircleResponseDTO {
             return CircleResponseDTO(
                     id = circle.id,
-                    name = circle.name,
+                    title = circle.title,
                     englishLevel = circle.englishLevel,
                     city = circle.city,
                     thumbnail = circle.thumbnailUrl,

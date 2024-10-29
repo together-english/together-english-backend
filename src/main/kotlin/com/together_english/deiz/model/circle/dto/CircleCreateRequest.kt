@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile
 
 data class CircleCreateRequest (
         @NotBlank(message = "서클 이름은 필수 입력 사항입니다.")
-        val name: String,
+        val title: String,
 
         @NotNull(message = "영어 레벨은 필수 입력 사항입니다.")
         val englishLevel: EnglishLevel,
@@ -45,7 +45,7 @@ data class CircleCreateRequest (
     fun toEntity(leader: Member, thumbnailUrl: String?): Circle {
         return Circle(
                 leader = leader,
-                name = this.name,
+                title = this.title,
                 englishLevel = this.englishLevel,
                 city = this.city,
                 introduction = this.introduction,
