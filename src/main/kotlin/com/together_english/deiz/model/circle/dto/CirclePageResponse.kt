@@ -11,7 +11,7 @@ data class CirclePageResponse(
         val id: UUID,
 
         @Schema(description = "썸네일 URL", example = "thumbnail.link.com")
-        val thumbnail: String? = null,
+        val thumbnailUrl: String? = null,
 
         @Schema(description = "서클 제목", example = "영어 스터디 그룹")
         val title: String,
@@ -39,7 +39,7 @@ data class CirclePageResponse(
 
         @Schema(description = "총 좋아요 수", example = "30")
         val totalLike: Int,
-
+) {
         @Schema(description = "내가 좋아요를 눌렀는지 여부", example = "false")
         val likedByMe: Boolean = false
-)
+}

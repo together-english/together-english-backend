@@ -61,6 +61,8 @@ tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs += "-Xjsr305=strict"
 		jvmTarget = "17"
+		languageVersion = "2.1" // 언어 버전을 2.1로 설정
+		apiVersion = "2.1" // API 버전도 2.1로 설정
 	}
 }
 

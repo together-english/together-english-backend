@@ -1,10 +1,11 @@
 package com.together_english.deiz.model.circle
 
-import com.together_english.deiz.common.base.BaseEntity
+import com.together_english.deiz.common.base.BaseTimeEntity
 import com.together_english.deiz.model.common.City
 import com.together_english.deiz.model.common.EnglishLevel
 import com.together_english.deiz.model.member.entity.Member
 import jakarta.persistence.*
+import java.util.*
 
 @Entity
 class Circle(
@@ -19,7 +20,11 @@ class Circle(
         attendMode: AttendMode,
         contactWay: ContactWay,
         onlineUrl: String? = null,
-) : BaseEntity(){
+): BaseTimeEntity(){
+
+    @Id
+    val id: UUID = UUID.randomUUID()
+
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "leader_id", nullable = false)
     val leader:Member = leader

@@ -1,6 +1,7 @@
 package com.together_english.deiz.controller
 
 import com.together_english.deiz.model.circle.dto.CircleCreateRequest
+import com.together_english.deiz.model.circle.dto.CirclePageResponse
 import com.together_english.deiz.model.common.MainResponse
 import com.together_english.deiz.model.common.MainResponse.Companion.getSuccessResponse
 import com.together_english.deiz.model.member.entity.Member
@@ -12,6 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -43,4 +46,21 @@ class CircleController(
         val circleId = circleService.createCircleWithSchedule(request, member, thumbnailFile)
         return ResponseEntity.ok(getSuccessResponse("Circle created successfully with ID: $circleId"))
     }
+
+    @Operation(
+            summary = "영어 모임 목록 조회",
+            description = "영어 모임 목록을 페이징하여 반환합니다."
+    )
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Successfully retrieved circles with schedules."),
+        ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data.")
+    ])
+    @GetMapping
+    fun getCirclesWithSchedules(pageable: Pageable): ResponseEntity<MainResponse<Page<CirclePageResponse?>>> {
+        val circlesPage = circleService.getCirclesWithSchedules(pageable)
+        return ResponseEntity.ok(MainResponse.getSuccessResponse(circlesPage))
+    }
+
+
+
 }
