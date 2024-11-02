@@ -1,4 +1,4 @@
-package com.together_english.deiz.repository.custom.impl
+package com.together_english.deiz.repository.custom
 
 import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpqlExecutor
 import com.together_english.deiz.model.circle.Circle
@@ -17,7 +17,7 @@ class CustomCircleRepositoryImpl(
         private val kotlinJdslJpqlExecutor: KotlinJdslJpqlExecutor
 ) : CustomCircleRepository {
 
-    override fun findCirclesWithSchedules(pageable: Pageable): Page<CirclePageResponse?> {
+    override fun findCirclesByPagination(pageable: Pageable): Page<CirclePageResponse?> {
         return kotlinJdslJpqlExecutor.findPage(pageable) {
             selectNew<CirclePageResponse>(
                     path(Circle::id),

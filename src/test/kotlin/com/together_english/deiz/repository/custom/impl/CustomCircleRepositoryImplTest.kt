@@ -3,7 +3,6 @@ package com.together_english.deiz.repository.custom.impl
 import com.together_english.deiz.model.circle.AttendMode
 import com.together_english.deiz.model.circle.Circle
 import com.together_english.deiz.model.circle.ContactWay
-import com.together_english.deiz.model.circle.dto.CirclePageResponse
 import com.together_english.deiz.model.common.City
 import com.together_english.deiz.model.common.EnglishLevel
 import com.together_english.deiz.model.member.Gender
@@ -71,7 +70,7 @@ class CustomCircleRepositoryImplTest {
 
         // When: We call the findCirclesWithSchedules method
         val pageable = PageRequest.of(0, 10)
-        val result = circleRepository.findCirclesWithSchedules(pageable)
+        val result = circleRepository.findCirclesByPagination(pageable)
 
         // Then: Verify the results
         assertEquals(1, result.totalElements)

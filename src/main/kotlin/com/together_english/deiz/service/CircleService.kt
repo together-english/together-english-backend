@@ -57,8 +57,8 @@ class CircleService(
 
     }
 
-    fun getCirclesWithSchedules(pageable: Pageable): Page<CirclePageResponse?> {
-        return circleRepository.findCirclesWithSchedules(pageable)
+    fun findCirclesByPagination(pageable: Pageable): Page<CirclePageResponse?> {
+        return circleRepository.findCirclesByPagination(pageable)
     }
 
 }
