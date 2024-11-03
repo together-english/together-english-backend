@@ -8,9 +8,9 @@ import com.together_english.deiz.model.common.City
 import com.together_english.deiz.model.common.EnglishLevel
 import java.util.*
 
-data class CircleResponseDTO(
+data class CircleDetailResponse(
         val id: UUID,
-        val name: String,
+        val title: String,
         val englishLevel: EnglishLevel,
         val city: City,
         val thumbnail: String? = null,
@@ -25,10 +25,10 @@ data class CircleResponseDTO(
         val weekView: Int = 0
 ) {
     companion object {
-        fun fromEntity(circle: Circle): CircleResponseDTO {
-            return CircleResponseDTO(
+        fun fromEntity(circle: Circle): CircleDetailResponse {
+            return CircleDetailResponse(
                     id = circle.id,
-                    name = circle.name,
+                    title = circle.title,
                     englishLevel = circle.englishLevel,
                     city = circle.city,
                     thumbnail = circle.thumbnailUrl,

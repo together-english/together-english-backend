@@ -1,7 +1,7 @@
 package com.together_english.deiz.model.member.entity
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.together_english.deiz.common.base.BaseEntity
+import com.together_english.deiz.common.base.BaseTimeEntity
 import com.together_english.deiz.exception.NotMatchedPasswordException
 import com.together_english.deiz.model.circle.Circle
 import com.together_english.deiz.model.circle.CircleComment
@@ -14,6 +14,7 @@ import jakarta.persistence.*
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.password.PasswordEncoder
+import java.util.*
 
 @Entity
 class Member(
@@ -27,7 +28,10 @@ class Member(
         isTermsAgreed: Boolean,
         isPrivacyAgreed: Boolean,
         isMarketingAgreed: Boolean = false
-): BaseEntity(), UserDetails {
+): BaseTimeEntity(), UserDetails {
+
+    @Id
+    val id: UUID = UUID.randomUUID()
 
     @Column(nullable = false, unique = true, length = 64)
     val email: String = email

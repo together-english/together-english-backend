@@ -1,8 +1,9 @@
 package com.together_english.deiz.model.circle
 
-import com.together_english.deiz.common.base.BaseEntity
+import com.together_english.deiz.common.base.BaseTimeEntity
 import com.together_english.deiz.model.common.DayOfWeek
 import jakarta.persistence.*
+import java.util.*
 
 @Entity
 class CircleSchedule(
@@ -10,7 +11,9 @@ class CircleSchedule(
     dayOfWeek: DayOfWeek,
     startTime: String,
     endTime: String
-) : BaseEntity() {
+) : BaseTimeEntity() {
+    @Id
+    val id: UUID = UUID.randomUUID()
     @JoinColumn(name = "circle_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     val circle: Circle = circle

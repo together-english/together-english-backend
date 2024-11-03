@@ -1,15 +1,16 @@
 package com.together_english.deiz.model.circle
 
-import com.together_english.deiz.common.base.BaseEntity
+import com.together_english.deiz.common.base.BaseTimeEntity
 import com.together_english.deiz.model.common.City
 import com.together_english.deiz.model.common.EnglishLevel
 import com.together_english.deiz.model.member.entity.Member
 import jakarta.persistence.*
+import java.util.*
 
 @Entity
 class Circle(
         leader: Member,
-        name: String,
+        title: String,
         englishLevel: EnglishLevel,
         city: City,
         thumbnailUrl: String? = null,
@@ -19,13 +20,17 @@ class Circle(
         attendMode: AttendMode,
         contactWay: ContactWay,
         onlineUrl: String? = null,
-) : BaseEntity(){
+): BaseTimeEntity(){
+
+    @Id
+    val id: UUID = UUID.randomUUID()
+
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "leader_id", nullable = false)
     val leader:Member = leader
 
     @Column(nullable = false, length = 255)
-    var name: String = name
+    var title: String = title
         protected set
 
     @Column(nullable = false, length = 32)
@@ -79,6 +84,9 @@ class Circle(
     var favoriteCircle: MutableList<FavoriteCircle> = mutableListOf()
 
     var totalView: Int = 0
+        protected set
+
+    var totalLike: Int = 0
         protected set
 
     var weekView: Int = 0

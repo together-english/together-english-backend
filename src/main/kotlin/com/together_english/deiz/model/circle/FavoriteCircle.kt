@@ -1,6 +1,5 @@
 package com.together_english.deiz.model.circle
 
-import com.together_english.deiz.common.base.BaseEntity
 import com.together_english.deiz.model.member.entity.Member
 import jakarta.persistence.*
 

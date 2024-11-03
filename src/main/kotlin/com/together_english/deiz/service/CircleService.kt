@@ -1,9 +1,12 @@
 package com.together_english.deiz.service
 
 import com.together_english.deiz.model.circle.dto.CircleCreateRequest
+import com.together_english.deiz.model.circle.dto.CirclePageResponse
 import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.repository.CircleRepository
 import com.together_english.deiz.repository.CircleScheduleRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -52,6 +55,10 @@ class CircleService(
 
     fun updateCircleFavorite() {
 
+    }
+
+    fun findCirclesByPagination(pageable: Pageable): Page<CirclePageResponse?> {
+        return circleRepository.findCirclesByPagination(pageable)
     }
 
 }

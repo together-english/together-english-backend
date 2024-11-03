@@ -32,6 +32,7 @@ class WebSecurityConfig(
             authorizeHttpRequests {
                 authorize("/", permitAll)
                 authorize("/auth/**", permitAll)
+                authorize(HttpMethod.GET, "/circle/**", permitAll)
                 authorize("/member/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.POST,"/circle/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.POST,"/comment/**", hasAuthority(Role.USER.authority))
