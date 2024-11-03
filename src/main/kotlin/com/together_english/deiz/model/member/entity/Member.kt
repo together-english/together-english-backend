@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.together_english.deiz.common.base.BaseTimeEntity
 import com.together_english.deiz.exception.NotMatchedPasswordException
 import com.together_english.deiz.model.circle.Circle
+import com.together_english.deiz.model.circle.CircleComment
 import com.together_english.deiz.model.circle.FavoriteCircle
 import com.together_english.deiz.model.member.Gender
 import com.together_english.deiz.model.member.Role
@@ -80,6 +81,10 @@ class Member(
 
     var valid: Boolean = true
         private set
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "member")
+    var circleComments: MutableList<CircleComment> = mutableListOf()
+
 
     @ElementCollection(targetClass = Role::class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = [JoinColumn(name = "user_id")])
