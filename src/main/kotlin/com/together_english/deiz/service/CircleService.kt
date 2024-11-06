@@ -2,6 +2,7 @@ package com.together_english.deiz.service
 
 import com.together_english.deiz.model.circle.dto.CircleCreateRequest
 import com.together_english.deiz.model.circle.dto.CirclePageResponse
+import com.together_english.deiz.model.circle.dto.CircleSearchRequest
 import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.repository.CircleRepository
 import com.together_english.deiz.repository.CircleScheduleRepository
@@ -57,8 +58,9 @@ class CircleService(
 
     }
 
-    fun findCirclesByPagination(pageable: Pageable): Page<CirclePageResponse?> {
-        return circleRepository.findCirclesByPagination(pageable)
+    fun findCirclesByPagination(pageable: Pageable, request: CircleSearchRequest?)
+    : Page<CirclePageResponse?> {
+        return circleRepository.findCirclesByPagination(pageable, request)
     }
 
 }

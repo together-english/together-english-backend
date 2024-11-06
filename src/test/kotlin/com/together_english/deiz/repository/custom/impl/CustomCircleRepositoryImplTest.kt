@@ -70,7 +70,7 @@ class CustomCircleRepositoryImplTest {
 
         // When: We call the findCirclesWithSchedules method
         val pageable = PageRequest.of(0, 10)
-        val result = circleRepository.findCirclesByPagination(pageable)
+        val result = circleRepository.findCirclesByPagination(pageable, null)
 
         // Then: Verify the results
         assertEquals(1, result.totalElements)

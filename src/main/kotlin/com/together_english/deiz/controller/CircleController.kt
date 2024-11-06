@@ -2,6 +2,9 @@ package com.together_english.deiz.controller
 
 import com.together_english.deiz.model.circle.dto.CircleCreateRequest
 import com.together_english.deiz.model.circle.dto.CirclePageResponse
+import com.together_english.deiz.model.circle.dto.CircleSearchRequest
+import com.together_english.deiz.model.common.City
+import com.together_english.deiz.model.common.EnglishLevel
 import com.together_english.deiz.model.common.MainResponse
 import com.together_english.deiz.model.common.MainResponse.Companion.getSuccessResponse
 import com.together_english.deiz.model.member.entity.Member
@@ -61,9 +64,13 @@ class CircleController(
     fun findCirclesByPagination(
             @PageableDefault(
                     size = 9, page = 0, sort = ["createdAt"], direction = Sort.Direction.DESC
-            ) pageable: Pageable
+            ) pageable: Pageable,
+            @RequestParam(required = false) title: String?,
+            @RequestParam(required = false) city: City?,
+            @RequestParam(required = false) level: EnglishLevel?
     ): ResponseEntity<MainResponse<Page<CirclePageResponse?>>> {
-        val circlesPage = circleService.findCirclesByPagination(pageable)
+        val request = CircleSearchRequest(title, city, level)
+        val circlesPage = circleService.findCirclesByPagination(pageable, request)
         return ResponseEntity.ok(MainResponse.getSuccessResponse(circlesPage))
     }
 
