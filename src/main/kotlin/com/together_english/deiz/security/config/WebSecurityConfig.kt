@@ -35,6 +35,8 @@ class WebSecurityConfig(
                 authorize(HttpMethod.GET, "/circle/**", permitAll)
                 authorize("/member/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.POST,"/circle/**", hasAuthority(Role.USER.authority))
+                authorize(HttpMethod.POST,"/comment/**", hasAuthority(Role.USER.authority))
+                authorize(HttpMethod.PATCH,"/comment/**", hasAuthority(Role.USER.authority))
                 authorize("/h2-console/**", permitAll)
                 authorize("/swagger-ui/**", permitAll)
                 authorize("api-docs/**", permitAll)
