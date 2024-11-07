@@ -38,7 +38,7 @@ class CircleComment(
     @NotNull
     val member : Member = member
 
-    fun isWritten(member: Member): Boolean {
+    fun isWrittenBy(member: Member): Boolean {
         return this.member.id == member.id
     }
 
