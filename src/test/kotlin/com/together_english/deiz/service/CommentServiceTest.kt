@@ -131,7 +131,7 @@ class CommentServiceTest {
         val comment = commentRepository.findById(commentUpdateRequest.commentId)
             .orElseThrow { NoSuchElementException("comment id : ${commentUpdateRequest.commentId} not found") }
 
-        require(comment.isWritten(savedMember)) { "댓글 작성자만 수정 가능합니다." }
+        require(comment.isWrittenBy(savedMember)) { "댓글 작성자만 수정 가능합니다." }
         comment.updateContent(commentUpdateRequest)
 
         // Then
@@ -161,7 +161,7 @@ class CommentServiceTest {
         val comment = commentRepository.findById(commentUpdateRequest.commentId)
             .orElseThrow { NoSuchElementException("comment id : ${commentUpdateRequest.commentId} not found") }
 
-        require(comment.isWritten(savedMember)) { "댓글 작성자만 수정 가능합니다." }
+        require(comment.isWrittenBy(savedMember)) { "댓글 작성자만 수정 가능합니다." }
         comment.updateContent(commentUpdateRequest)
 
         // Then
