@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.TestPropertySource
 import java.util.*
+import kotlin.NoSuchElementException
 
 
 @SpringBootTest
@@ -91,7 +92,7 @@ class CommentServiceTest {
     }
 
     @Test
-    fun `create CircleComment_success`() {
+    fun create_CircleComment_success() {
         // Given
         val circleComment = CircleComment(
             content = "This is a test comment",
@@ -112,7 +113,7 @@ class CommentServiceTest {
     }
 
     @Test
-    fun `update_CircleComment_success`() {
+    fun update_CircleComment_success() {
         // Given
         val circleComment = CircleComment(
             content = "This is test comment",
@@ -125,7 +126,7 @@ class CommentServiceTest {
             content = "test comment update",
             commentId = savedComment.id,
         )
-        require(circleComment.content.length > 2) { "댓글은 2글자 이상으로 작성해야합니다." }
+        require(commentUpdateRequest.content.length > 2) { "댓글은 2글자 이상으로 작성해야합니다." }
 
         // When
         val comment = commentRepository.findById(commentUpdateRequest.commentId)
@@ -142,7 +143,7 @@ class CommentServiceTest {
     }
 
     @Test
-    fun `update_CircleComment_failed`() {
+    fun update_CircleComment_failed_notFoundCommentId() {
         // Given
         val circleComment = CircleComment(
             content = "This is a test comment",
@@ -155,19 +156,69 @@ class CommentServiceTest {
             content = "test comment update",
             commentId = UUID.randomUUID(),
         )
-        require(circleComment.content.length > 2) { "댓글은 2글자 이상으로 작성해야합니다." }
+        require(commentUpdateRequest.content.length > 2) { "댓글은 2글자 이상으로 작성해야합니다." }
+
+        // When / Then
+        assertThrows(NoSuchElementException::class.java) {
+            commentRepository.findById(commentUpdateRequest.commentId)
+                .orElseThrow { NoSuchElementException("comment id : ${commentUpdateRequest.commentId} not found") }
+        }
+    }
+
+    @Test
+    fun update_CircleComment_failed_contentLengthCheck() {
+        // Given
+        val circleComment = CircleComment(
+            content = "This is test comment",
+            circle = savedCircle,
+            member = savedMember
+        )
+        val savedComment = commentRepository.save(circleComment)
+
+        val commentUpdateRequest = CommentUpdateRequest(
+            content = "t",
+            commentId = savedComment.id,
+        )
 
         // When
         val comment = commentRepository.findById(commentUpdateRequest.commentId)
             .orElseThrow { NoSuchElementException("comment id : ${commentUpdateRequest.commentId} not found") }
 
-        require(comment.isWrittenBy(savedMember)) { "댓글 작성자만 수정 가능합니다." }
-        comment.updateContent(commentUpdateRequest)
+        // Then
+        assertThrows(IllegalArgumentException::class.java) { require(commentUpdateRequest.content.length > 2) { "댓글은 2글자 이상으로 작성해야합니다." } }
+    }
+
+    @Test
+    fun update_CircleComment_failed_isWrittenByCheck() {
+        // Given
+        val anotherMember = Member(
+            name = "another",
+            nickname = "another",
+            email = "another@example.com",
+            hashedPassword = "password123",
+            gender = Gender.F,
+            age = 28,
+            isTermsAgreed = true,
+            isPrivacyAgreed = true
+        )
+        val circleComment = CircleComment(
+            content = "This is test comment",
+            circle = savedCircle,
+            member = savedMember
+        )
+        val savedComment = commentRepository.save(circleComment)
+
+        val commentUpdateRequest = CommentUpdateRequest(
+            content = "test comment update",
+            commentId = savedComment.id,
+        )
+        require(commentUpdateRequest.content.length > 2) { "댓글은 2글자 이상으로 작성해야합니다." }
+
+        // When
+        val comment = commentRepository.findById(commentUpdateRequest.commentId)
+            .orElseThrow { NoSuchElementException("comment id : ${commentUpdateRequest.commentId} not found") }
 
         // Then
-        assertNotNull(comment.id)
-        assertEquals("test comment update", comment.content)
-        assertEquals(savedMember.id, comment.member.id)
-        assertEquals(savedCircle.id, comment.circle.id)
+        assertThrows(IllegalArgumentException::class.java) { require(comment.isWrittenBy(anotherMember)) { "댓글 작성자만 수정 가능합니다." } }
     }
 }
