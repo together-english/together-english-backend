@@ -37,6 +37,7 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("org.postgresql:postgresql:42.6.0")
 	implementation("com.github.f4b6a3:ulid-creator:5.1.0")
 	implementation("com.h2database:h2")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
