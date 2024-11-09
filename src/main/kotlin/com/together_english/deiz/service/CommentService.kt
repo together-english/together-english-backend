@@ -32,7 +32,7 @@ class CommentService(
         val comment = commentRepository.findById(request.commentId)
             .orElseThrow { NoSuchElementException("comment id : ${request.commentId} not found") }
 
-        require(comment.isWritten(member)) { "댓글 작성자만 수정 가능합니다." }
+        require(comment.isWrittenBy(member)) { "댓글 작성자만 수정 가능합니다." }
         comment.updateContent(request)
         return comment.id.toString()
     }
