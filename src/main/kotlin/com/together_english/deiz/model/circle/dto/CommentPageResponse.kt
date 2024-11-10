@@ -18,6 +18,8 @@ data class CommentPageResponse(
     val circleId: UUID,
     @Schema(description = "유저 닉네임", example = "창원불주먹종와이")
     val memberNickname: String,
+    @Schema(description = "유저 프로필", example = "URL")
+    val memberProfile: String,
 ) {
 
 }
