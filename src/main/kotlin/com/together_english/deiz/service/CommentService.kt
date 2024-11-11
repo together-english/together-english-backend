@@ -1,12 +1,16 @@
 package com.together_english.deiz.service
 
 import com.together_english.deiz.model.circle.dto.CommentCreateRequest
+import com.together_english.deiz.model.circle.dto.CommentPageResponse
 import com.together_english.deiz.model.circle.dto.CommentUpdateRequest
 import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.repository.CircleRepository
 import com.together_english.deiz.repository.CommentRepository
 import jakarta.transaction.Transactional
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class CommentService(
@@ -35,5 +39,10 @@ class CommentService(
         require(comment.isWrittenBy(member)) { "댓글 작성자만 수정 가능합니다." }
         comment.updateContent(request)
         return comment.id.toString()
+    }
+
+    @Transactional
+    fun findCommentsByPagination(pageable: Pageable, request: UUID): Page<CommentPageResponse?> {
+        return commentRepository.findByCircleId(pageable, request)
     }
 }
