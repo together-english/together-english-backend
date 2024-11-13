@@ -7,6 +7,7 @@ on:
       - main
       - develop
       - feat_kormap
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -44,16 +45,22 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/together-english-backend:latest
 
-# TODO
-#  deploy:
-#    needs: build
-
-
-
-#TODO - AWS Connect ENV
-#env:
-#  AWS_REGION: [AWS_REGION]
-#  ECR_REGISTRY: [ECR REPOSITORY NAME]
-#  EC2_IP_ADDRESS: [EC2 IP]
-###################
-
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      EC2_INSTANCE_IP : ${{ secrets.EC2_INSTANCE_IP }}
+      SSH_PRIVATE_KEY : ${{ secrets.SSH_PRIVATE_KEY }}
+    steps:
+      - name: SSH into EC2 and Docker Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.EC2_INSTANCE_IP }}
+          key: ${{ env.SSH_PRIVATE_KEY }}
+          username: ec2-user
+          script: |
+            echo ${{ secrets.GHCR_PAT }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+            docker pull ghcr.io/${{ github.repository_owner }}/together-english-backend:latest
+            docker stop together-english-backend || true
+            docker rm together-english-backend || true
+            docker run -d -p 8080:8080 --name together-english-backend ghcr.io/${{ github.repository_owner }}/together-english-backend:latest
