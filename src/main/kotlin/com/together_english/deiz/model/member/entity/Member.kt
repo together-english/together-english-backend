@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.together_english.deiz.common.base.BaseTimeEntity
 import com.together_english.deiz.exception.NotMatchedPasswordException
 import com.together_english.deiz.model.circle.Circle
-import com.together_english.deiz.model.circle.CircleComment
+import com.together_english.deiz.model.comment.CircleComment
 import com.together_english.deiz.model.circle.FavoriteCircle
 import com.together_english.deiz.model.member.Gender
 import com.together_english.deiz.model.member.Role

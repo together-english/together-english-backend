@@ -1,7 +1,7 @@
 package com.together_english.deiz.repository
 
-import com.together_english.deiz.model.circle.CircleComment
-import com.together_english.deiz.model.circle.dto.CommentPageResponse
+import com.together_english.deiz.model.comment.CircleComment
+import com.together_english.deiz.model.comment.dto.CommentPageResponse
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
