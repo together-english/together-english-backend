@@ -1,0 +1,59 @@
+name: CI/CD together-english-backend
+
+# Event 설정: branch 에 push 이벤트가 생겼을때, 작업 수행
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feat_kormap
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Grant execute permission to gradlew
+        run: chmod +x ./gradlew
+      - name: Test with Gradle
+        run: ./gradlew test
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+      - name: Set up Docker BuildX
+        uses: docker/setup-buildx-action@v2
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/together-english-backend:latest
+
+# TODO
+#  deploy:
+#    needs: build
+
+
+
+#TODO - AWS Connect ENV
+#env:
+#  AWS_REGION: [AWS_REGION]
+#  ECR_REGISTRY: [ECR REPOSITORY NAME]
+#  EC2_IP_ADDRESS: [EC2 IP]
+###################
+

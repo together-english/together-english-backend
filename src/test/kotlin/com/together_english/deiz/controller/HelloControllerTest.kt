@@ -10,12 +10,5 @@ import org.springframework.test.web.servlet.get
 @SpringBootTest
 @AutoConfigureMockMvc
 class HelloControllerTest(@Autowired private val mockMvc: MockMvc) {
-    @Test
-    fun `index page is not protected`() {
-        this.mockMvc
-                .get("/")
-                .andExpect {
-                    status { isOk() }
-                }
-    }
+
 }

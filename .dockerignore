@@ -1,0 +1,10 @@
+.idea
+.git
+.gitignore
+.dockerignore
+.DS_Store
+Dockerfile
+*.md
+*.sh
+*.yml
+scripts
