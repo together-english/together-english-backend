@@ -70,4 +70,4 @@ jobs:
             docker pull ghcr.io/${{ github.repository_owner }}/together-english-backend:latest
             docker stop together-english-backend || true
             docker rm together-english-backend || true
-            docker run -d -p 8080:8080 --name together-english-backend ghcr.io/${{ github.repository_owner }}/together-english-backend:latest
+            docker run -d -p 8080:8080 --name together-english-backend -v ${{ secrets.BACKEND_LOGPATH }}:${{ secrets.DOCKER_LOGPATH }} ghcr.io/${{ github.repository_owner }}/together-english-backend:latest
