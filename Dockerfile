@@ -16,7 +16,7 @@ WORKDIR /workspace
 # Build stage copy
 COPY --from=build /workspace/build/libs/*.jar deiz.jar
 # SpringBoot/DataBase ENV (local/dev)
-ENV SPRING_PROFILES_ACTIVE=local
+ENV SPRING_PROFILES_ACTIVE=dev
 ENV TZ="Asia/Seoul"
 EXPOSE 8080
 LABEL maintainer="kodh10@gmail.com"
