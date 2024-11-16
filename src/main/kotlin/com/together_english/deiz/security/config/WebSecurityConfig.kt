@@ -36,6 +36,7 @@ class WebSecurityConfig(
                 authorize("/member/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.POST,"/circle/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.PUT,"/circle/**", hasAuthority(Role.USER.authority))
+                authorize(HttpMethod.GET, "/comment/**", permitAll)
                 authorize(HttpMethod.POST,"/comment/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.PATCH,"/comment/**", hasAuthority(Role.USER.authority))
                 authorize("/h2-console/**", permitAll)
