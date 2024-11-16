@@ -1,8 +1,8 @@
 package com.together_english.deiz.controller
 
-import com.together_english.deiz.model.circle.dto.CommentCreateRequest
-import com.together_english.deiz.model.circle.dto.CommentPageResponse
-import com.together_english.deiz.model.circle.dto.CommentUpdateRequest
+import com.together_english.deiz.model.comment.dto.CommentCreateRequest
+import com.together_english.deiz.model.comment.dto.CommentPageResponse
+import com.together_english.deiz.model.comment.dto.CommentUpdateRequest
 import com.together_english.deiz.model.common.MainResponse
 import com.together_english.deiz.model.common.MainResponse.Companion.getSuccessResponse
 import com.together_english.deiz.model.member.entity.Member

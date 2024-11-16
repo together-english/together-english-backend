@@ -1,8 +1,9 @@
 package com.together_english.deiz.service
 
-import com.together_english.deiz.model.circle.dto.CommentCreateRequest
-import com.together_english.deiz.model.circle.dto.CommentPageResponse
-import com.together_english.deiz.model.circle.dto.CommentUpdateRequest
+import com.together_english.deiz.model.comment.CommentStatus
+import com.together_english.deiz.model.comment.dto.CommentCreateRequest
+import com.together_english.deiz.model.comment.dto.CommentPageResponse
+import com.together_english.deiz.model.comment.dto.CommentUpdateRequest
 import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.repository.CircleRepository
 import com.together_english.deiz.repository.CommentRepository
@@ -43,6 +44,6 @@ class CommentService(
 
     @Transactional
     fun findCommentsByPagination(pageable: Pageable, request: UUID): Page<CommentPageResponse?> {
-        return commentRepository.findByCircleId(pageable, request)
+        return commentRepository.findByCircleIdAndStatus(pageable, request, CommentStatus.ACTIVE)
     }
 }

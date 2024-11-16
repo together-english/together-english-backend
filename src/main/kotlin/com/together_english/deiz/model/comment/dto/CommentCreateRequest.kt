@@ -1,7 +1,7 @@
-package com.together_english.deiz.model.circle.dto
+package com.together_english.deiz.model.comment.dto
 
 import com.together_english.deiz.model.circle.Circle
-import com.together_english.deiz.model.circle.CircleComment
+import com.together_english.deiz.model.comment.CircleComment
 import com.together_english.deiz.model.member.entity.Member
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank

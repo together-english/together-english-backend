@@ -1,7 +1,9 @@
 package com.together_english.deiz.service
 
 import com.together_english.deiz.model.circle.*
-import com.together_english.deiz.model.circle.dto.CommentUpdateRequest
+import com.together_english.deiz.model.comment.dto.CommentUpdateRequest
+import com.together_english.deiz.model.comment.CircleComment
+import com.together_english.deiz.model.comment.CommentStatus
 import com.together_english.deiz.model.common.City
 import com.together_english.deiz.model.common.EnglishLevel
 import com.together_english.deiz.model.member.Gender
@@ -107,7 +109,7 @@ class CommentServiceTest {
         // Then
         assertNotNull(savedComment.id)
         assertEquals("This is a test comment", savedComment.content)
-        assertEquals(CommentStatus.REPORTED, savedComment.status)
+        assertEquals(CommentStatus.ACTIVE, savedComment.status)
         assertEquals(savedCircle.id, savedComment.circle.id)
         assertEquals(savedMember.id, savedComment.member.id)
     }

@@ -1,6 +1,7 @@
 package com.together_english.deiz.model.circle
 
 import com.together_english.deiz.common.base.BaseTimeEntity
+import com.together_english.deiz.model.comment.CircleComment
 import com.together_english.deiz.model.circle.dto.CircleUpdateRequest
 import com.together_english.deiz.model.common.City
 import com.together_english.deiz.model.common.EnglishLevel

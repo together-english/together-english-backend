@@ -1,7 +1,8 @@
-package com.together_english.deiz.model.circle
+package com.together_english.deiz.model.comment
 
 import com.together_english.deiz.common.base.BaseTimeEntity
-import com.together_english.deiz.model.circle.dto.CommentUpdateRequest
+import com.together_english.deiz.model.circle.Circle
+import com.together_english.deiz.model.comment.dto.CommentUpdateRequest
 import com.together_english.deiz.model.member.entity.Member
 import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
@@ -25,7 +26,7 @@ class CircleComment(
     @Column(length = 50)
     @Enumerated(value = EnumType.STRING)
     @NotNull
-    var status: CommentStatus = CommentStatus.REPORTED
+    var status: CommentStatus = CommentStatus.ACTIVE
         private set
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

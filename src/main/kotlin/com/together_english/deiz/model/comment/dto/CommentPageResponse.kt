@@ -1,4 +1,4 @@
-package com.together_english.deiz.model.circle.dto
+package com.together_english.deiz.model.comment.dto
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
