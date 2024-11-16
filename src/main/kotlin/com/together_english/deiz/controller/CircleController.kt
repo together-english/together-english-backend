@@ -3,6 +3,7 @@ package com.together_english.deiz.controller
 import com.together_english.deiz.model.circle.dto.CircleCreateRequest
 import com.together_english.deiz.model.circle.dto.CirclePageResponse
 import com.together_english.deiz.model.circle.dto.CircleSearchRequest
+import com.together_english.deiz.model.circle.dto.CircleUpdateRequest
 import com.together_english.deiz.model.common.City
 import com.together_english.deiz.model.common.EnglishLevel
 import com.together_english.deiz.model.common.MainResponse
@@ -24,6 +25,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.util.UUID
 
 
 @RestController
@@ -74,4 +76,25 @@ class CircleController(
         return ResponseEntity.ok(MainResponse.getSuccessResponse(circlesPage))
     }
 
+    @Operation(
+        summary = "영어 모임 업데이트",
+        description = "영어 모임을 업데이트 합니다.",
+        security = [SecurityRequirement(name = "Authorization")]
+    )
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Circle updated successfully with ID: 1"),
+        ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data.")
+    ])
+    @PutMapping
+    fun updateCircle(
+        @Valid @RequestBody request: CircleUpdateRequest,
+        @Parameter(hidden = true) member: Member
+    ): ResponseEntity<MainResponse<String>> {
+         circleService.updateCircleWithSchedule(
+            request = request,
+            member = member
+         )
+        return ResponseEntity.ok(getSuccessResponse("Circle updated successfully with ID: ${request.id}"))
+
+    }
 }

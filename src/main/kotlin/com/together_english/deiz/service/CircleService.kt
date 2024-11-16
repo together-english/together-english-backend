@@ -1,8 +1,11 @@
 package com.together_english.deiz.service
 
+import com.together_english.deiz.exception.NotExistException
+import com.together_english.deiz.exception.UnAuthorizedAccessException
 import com.together_english.deiz.model.circle.dto.CircleCreateRequest
 import com.together_english.deiz.model.circle.dto.CirclePageResponse
 import com.together_english.deiz.model.circle.dto.CircleSearchRequest
+import com.together_english.deiz.model.circle.dto.CircleUpdateRequest
 import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.repository.CircleRepository
 import com.together_english.deiz.repository.CircleScheduleRepository
@@ -11,6 +14,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import java.util.*
 
 @Service
 class CircleService(
@@ -33,8 +37,19 @@ class CircleService(
     }
 
     @Transactional
-    fun updateCircleWithSchedule() {
-
+    fun updateCircleWithSchedule(request: CircleUpdateRequest, member: Member) {
+        val circle = circleRepository.findById(request.id).orElseThrow {
+            NotExistException("circle id: $request.id")
+        }
+        if (circle.leader.id != member.id) {
+            throw UnAuthorizedAccessException()
+        }
+        circle.update(request)
+        if (request.circleSchedules.isNotEmpty()) {
+            val circleSchedule = request.circleSchedules.map { it.toEntity(it,circle) }
+            circleScheduleRepository.deleteAllByCircle(circle)
+            circleScheduleRepository.saveAll(circleSchedule)
+        }
     }
 
     @Transactional
