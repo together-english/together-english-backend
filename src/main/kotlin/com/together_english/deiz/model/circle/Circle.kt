@@ -1,6 +1,7 @@
 package com.together_english.deiz.model.circle
 
 import com.together_english.deiz.common.base.BaseTimeEntity
+import com.together_english.deiz.model.circle.dto.CircleUpdateRequest
 import com.together_english.deiz.model.common.City
 import com.together_english.deiz.model.common.EnglishLevel
 import com.together_english.deiz.model.member.entity.Member
@@ -94,4 +95,20 @@ class Circle(
 
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "circle")
     var circleComments: MutableList<CircleComment> = mutableListOf()
+
+    fun update(request: CircleUpdateRequest) {
+        this.title = request.title
+        this.englishLevel = request.englishLevel
+        this.city = request.city
+        this.introduction = request.introduction
+        this.address = request.address
+        this.capacity = request.capacity
+        this.attendMode = request.attendMode
+        this.contactWay = request.contactWay
+        this.onlineUrl = request.onlineUrl
+    }
+
+    fun updateThumbnail(thumbnailUrl: String?) {
+        this.thumbnailUrl = thumbnailUrl
+    }
 }
