@@ -39,7 +39,8 @@ class CustomCircleRepositoryImpl(
             ).whereAnd(
                     request?.title?.let { path(Circle::title).like("%$it%") },
                     request?.level?.let { path(Circle::englishLevel).eq(it) },
-                    request?.city?.let { path(Circle::city).eq(it) }
+                    request?.city?.let { path(Circle::city).eq(it) },
+                    path(Circle::valid).eq(true)
             )
 
         }

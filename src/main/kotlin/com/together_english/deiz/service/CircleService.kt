@@ -53,8 +53,14 @@ class CircleService(
     }
 
     @Transactional
-    fun deleteCircleWithSchedule() {
-
+    fun deleteCircleWithSchedule(id: UUID, member: Member) {
+        var circle = circleRepository.findById(id).orElseThrow {
+            NotExistException("circle id: $id")
+        }
+        if (circle.leader.id != member.id) {
+            throw UnAuthorizedAccessException()
+        }
+        circle.delete()
     }
 
     fun findCirclePageForAnonymous() {
@@ -77,5 +83,6 @@ class CircleService(
     : Page<CirclePageResponse?> {
         return circleRepository.findCirclesByPagination(pageable, request)
     }
+
 
 }

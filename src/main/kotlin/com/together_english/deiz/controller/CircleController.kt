@@ -95,6 +95,23 @@ class CircleController(
             member = member
          )
         return ResponseEntity.ok(getSuccessResponse("Circle updated successfully with ID: ${request.id}"))
+    }
 
+    @Operation(
+        summary = "영어 모임 삭제하기",
+        description = "영어 모임을 삭제합니다.",
+        security = [SecurityRequirement(name = "Authorization")]
+    )
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Circle deleted successfully with ID: 1"),
+        ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data.")
+    ])
+    @DeleteMapping("/{id}")
+    fun deleteCircle(
+        @PathVariable id: UUID,
+        @Parameter(hidden = true) member: Member
+    ): ResponseEntity<MainResponse<String>> {
+        circleService.deleteCircleWithSchedule(id, member)
+        return ResponseEntity.ok(getSuccessResponse("Circle deleted successfully with ID: $id"))
     }
 }
