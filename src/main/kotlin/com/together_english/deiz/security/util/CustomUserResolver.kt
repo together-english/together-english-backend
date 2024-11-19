@@ -11,20 +11,20 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 
 @Component
-class CustomUserResolver: HandlerMethodArgumentResolver {
+class CustomUserResolver : HandlerMethodArgumentResolver {
     override fun supportsParameter(parameter: MethodParameter): Boolean {
         return parameter.parameterType == Member::class.java
     }
 
-    override fun resolveArgument(parameter: MethodParameter,
-                                 mavContainer: ModelAndViewContainer?,
-                                 webRequest: NativeWebRequest,
-                                 binderFactory: WebDataBinderFactory?): Any? {
+    override fun resolveArgument(
+        parameter: MethodParameter,
+        mavContainer: ModelAndViewContainer?,
+        webRequest: NativeWebRequest,
+        binderFactory: WebDataBinderFactory?
+    ): Any? {
         val authentication = SecurityContextHolder.getContext().authentication
-        if (authentication == null || authentication.principal !is Member) {
-            throw UsernameNotFoundException("해당 유저가 존재하지 않습니다.")
-        }
-        return authentication.principal as Member
+        return if (authentication == null || authentication.principal !is Member) null
+        else authentication.principal as Member
     }
 
 }
