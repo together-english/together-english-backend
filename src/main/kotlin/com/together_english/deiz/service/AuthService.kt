@@ -26,9 +26,6 @@ class AuthService(
     private val passwordEncoder: PasswordEncoder,
     private val jwtUtil: JwtUtil,
     private val mailApiService: MailApiService,
-
-    @Value("\${auth.password.reset.uri:/default-reset-uri}")
-    private val passwordResetURI: String,
 ) {
 
     private fun checkUserExistsByEmailOrNickname(email: String, nickname: String?) {
@@ -71,7 +68,7 @@ class AuthService(
     }
 
     @Transactional
-    fun sendPasswordResetEmail(email: String) {
+    fun sendPasswordResetEmail(email: String, passwordResetURI: String) {
         val user =
             memberRepository.findByEmail(email).orElseThrow { UsernameNotFoundException("$email: 해당 유저가 존재하지 않습니다.") }
         val userName = user.name

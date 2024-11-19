@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.*
 @Tag(name = "인증 API", description = "유저 인증을 위한 API")
 class AuthController(
         private val authService: AuthService,
+        @Value("\${auth.password.reset.uri:/default-reset-uri}")
+        private val passwordResetURI: String,
 ) {
 
     @Operation(summary = "회원 가입", description = "회원가입 요청")
@@ -58,7 +61,7 @@ class AuthController(
     fun sendPasswordResetEmail(
         @RequestParam email: String,
     ): ResponseEntity<MainResponse<Nothing>> {
-        authService.sendPasswordResetEmail(email)
+        authService.sendPasswordResetEmail(email, passwordResetURI)
         return ResponseEntity.ok(MainResponse.getSuccessResponse())
     }
 
