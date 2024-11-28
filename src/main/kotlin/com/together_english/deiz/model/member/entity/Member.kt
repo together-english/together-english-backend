@@ -18,17 +18,17 @@ import java.util.*
 
 @Entity
 class Member(
-        name: String,
-        nickname: String,
-        email: String,
-        hashedPassword: String,
-        profile: String? = null,
-        gender: Gender = Gender.NO,
-        age: Int = 0,
-        isTermsAgreed: Boolean,
-        isPrivacyAgreed: Boolean,
-        isMarketingAgreed: Boolean = false
-): BaseTimeEntity(), UserDetails {
+    name: String,
+    nickname: String,
+    email: String,
+    hashedPassword: String,
+    profile: String? = null,
+    gender: Gender = Gender.NO,
+    age: Int = 0,
+    isTermsAgreed: Boolean,
+    isPrivacyAgreed: Boolean,
+    isMarketingAgreed: Boolean = false
+) : BaseTimeEntity(), UserDetails {
 
     @Id
     val id: UUID = UUID.randomUUID()
@@ -116,7 +116,7 @@ class Member(
         if (request.nickname != "") {
             this.nickname = request.nickname
         }
-        this.gender =  Gender.valueOf(request.gender.uppercase())
+        this.gender = Gender.valueOf(request.gender.uppercase())
         this.isMarketingAgreed = request.isMarketingAgreed
         request.age?.let {
             this.age = it
@@ -133,17 +133,21 @@ class Member(
         }
     }
 
+    fun updatePassword(newPassword: String) {
+        this.hashedPassword = newPassword
+    }
+
 
     fun toMyPageResponse(): MyPageResponse {
         return MyPageResponse(
-                id = this.id.toString(),
-                name = this.name,
-                email = this.email,
-                nickname = this.nickname,
-                profile = this.profile,
-                gender = this.gender,
-                age = this.age,
-                isMarketingAgreed = this.isMarketingAgreed
+            id = this.id.toString(),
+            name = this.name,
+            email = this.email,
+            nickname = this.nickname,
+            profile = this.profile,
+            gender = this.gender,
+            age = this.age,
+            isMarketingAgreed = this.isMarketingAgreed
         )
     }
 }
