@@ -33,7 +33,8 @@ import kotlin.NoSuchElementException
         "jwt.refreshExpiration=342432",
         "cloud.aws.s3.bucket=dummy",
         "auth.mail-api.key=your-api-key-value",
-        "auth.mail-api.secret-key=your-api-secret-key-value"
+        "auth.mail-api.secret-key=your-api-secret-key-value",
+        "domain.url=dummy-domain",
     ]
 )
 class CommentServiceTest {
