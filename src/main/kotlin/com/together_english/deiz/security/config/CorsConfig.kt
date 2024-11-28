@@ -19,10 +19,12 @@ class CorsConfig(
                     "http://localhost:3000",
                     "http://localhost:80",
                     "http://localhost:80/swagger-ui.html",
+                    devDomainUrl,
                     "${devDomainUrl}/swagger-ui.html"
             )
             allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
             allowedHeaders = listOf("*")
+            exposedHeaders = listOf("Authorization")
             allowCredentials = true
         }
         val source = UrlBasedCorsConfigurationSource()
