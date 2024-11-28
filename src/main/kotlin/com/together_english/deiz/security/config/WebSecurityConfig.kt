@@ -43,6 +43,7 @@ class WebSecurityConfig(
                 authorize("/h2-console/**", permitAll)
                 authorize("/swagger-ui/**", permitAll)
                 authorize("api-docs/**", permitAll)
+                authorize("/v3/api-docs/**", permitAll)
             }
             csrf { disable() }
             sessionManagement {
