@@ -14,8 +14,8 @@ class CorsConfig {
         val configuration = CorsConfiguration().apply {
             allowedOrigins = listOf(
                     "http://localhost:3000",
-                    "http://localhost:8080",
-                    "http://localhost:8080/swagger-ui.html"
+                    "http://localhost:80",
+                    "http://localhost:80/swagger-ui.html"
             )
             allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
             allowedHeaders = listOf("*")
