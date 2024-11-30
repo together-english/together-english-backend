@@ -1,5 +1,6 @@
 package com.together_english.deiz.security.config
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.cors.CorsConfiguration
@@ -7,7 +8,9 @@ import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
-class CorsConfig {
+class CorsConfig(
+    @Value("\${domain.url}") val devDomainUrl: String,
+) {
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
@@ -21,10 +24,15 @@ class CorsConfig {
                 "http://api.together-english.com",
                 "https://api.together-english.com",
                 "http://together-english.com",
-                "https://together-english.com"
+                "https://together-english.com",
+                "http://localhost:80",
+                "http://localhost:80/swagger-ui.html",
+                devDomainUrl,
+                "${devDomainUrl}/swagger-ui.html"
             )
             allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
             allowedHeaders = listOf("*")
+            exposedHeaders = listOf("Authorization")
             allowCredentials = true
         }
         val source = UrlBasedCorsConfigurationSource()
