@@ -4,10 +4,7 @@ import com.together_english.deiz.exception.AlreadyExistException
 import com.together_english.deiz.exception.NotExistException
 import com.together_english.deiz.exception.UnAuthorizedAccessException
 import com.together_english.deiz.model.circle.FavoriteCircle
-import com.together_english.deiz.model.circle.dto.CircleCreateRequest
-import com.together_english.deiz.model.circle.dto.CirclePageResponse
-import com.together_english.deiz.model.circle.dto.CircleSearchRequest
-import com.together_english.deiz.model.circle.dto.CircleUpdateRequest
+import com.together_english.deiz.model.circle.dto.*
 import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.repository.CircleRepository
 import com.together_english.deiz.repository.CircleScheduleRepository
@@ -88,26 +85,14 @@ class CircleService(
         favoriteCircleRepository.delete(favoriteCircle)
     }
 
-    fun findCirclePageForAnonymous() {
-
-    }
-
-    fun findCirclePageForMember() {
-
-    }
-
-    fun getCircleDetail() {
-
-    }
-
-    fun updateCircleFavorite() {
-
+    @Transactional(readOnly = true)
+    fun getCircleDetail(id: UUID) : CircleDetailResponse {
+        val circle = circleRepository.findById(id).orElseThrow { NotExistException("circle id: $id") }
+        return CircleDetailResponse.fromEntity(circle)
     }
 
     fun findCirclesByPagination(pageable: Pageable, request: CircleSearchRequest?)
             : Page<CirclePageResponse?> {
         return circleRepository.findCirclesByPagination(pageable, request)
     }
-
-
 }

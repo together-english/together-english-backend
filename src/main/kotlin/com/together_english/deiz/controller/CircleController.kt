@@ -1,9 +1,6 @@
 package com.together_english.deiz.controller
 
-import com.together_english.deiz.model.circle.dto.CircleCreateRequest
-import com.together_english.deiz.model.circle.dto.CirclePageResponse
-import com.together_english.deiz.model.circle.dto.CircleSearchRequest
-import com.together_english.deiz.model.circle.dto.CircleUpdateRequest
+import com.together_english.deiz.model.circle.dto.*
 import com.together_english.deiz.model.common.City
 import com.together_english.deiz.model.common.EnglishLevel
 import com.together_english.deiz.model.common.MainResponse
@@ -59,7 +56,7 @@ class CircleController(
             description = "영어 모임 목록을 페이징하여 반환합니다."
     )
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Successfully retrieved circles with schedules."),
+        ApiResponse(responseCode = "200", description = "Successfully retrieved circle pages with schedules."),
         ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data.")
     ])
     @GetMapping
@@ -149,5 +146,22 @@ class CircleController(
     ): ResponseEntity<MainResponse<String>> {
         circleService.removeFavoriteToCircle(id, member)
         return ResponseEntity.ok(getSuccessResponse("Circle Favorite deleted successfully with Circle Id: $id"))
+    }
+
+
+    @Operation(
+        summary = "영어 모임 상세 조회",
+        description = "영어 모임을 상세 조회 합니다."
+    )
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Successfully retrieved circle detail with schedules."),
+        ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data")
+    ])
+    @GetMapping("/detail/{id}")
+    fun getCircleDetail(
+        @PathVariable id: UUID
+    ): ResponseEntity<MainResponse<CircleDetailResponse>> {
+        val response = circleService.getCircleDetail(id)
+        return ResponseEntity.ok(getSuccessResponse(response))
     }
 }

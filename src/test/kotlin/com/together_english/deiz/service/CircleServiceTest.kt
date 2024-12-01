@@ -1,16 +1,15 @@
 package com.together_english.deiz.service
 
-import com.together_english.deiz.model.circle.AttendMode
-import com.together_english.deiz.model.circle.Circle
-import com.together_english.deiz.model.circle.ContactWay
-import com.together_english.deiz.model.circle.FavoriteCircle
+import com.together_english.deiz.model.circle.*
 import com.together_english.deiz.model.common.City
+import com.together_english.deiz.model.common.DayOfWeek
 import com.together_english.deiz.model.common.EnglishLevel
 import com.together_english.deiz.model.member.Gender
 import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.repository.CircleRepository
 import com.together_english.deiz.repository.FavoriteCircleRepository
 import com.together_english.deiz.repository.MemberRepository
+import jakarta.persistence.EntityManager
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException
 import org.springframework.test.context.TestPropertySource
+import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
 @TestPropertySource(
@@ -41,6 +41,12 @@ class CircleServiceTest() {
     private lateinit var memberRepository: MemberRepository
 
     @Autowired
+    private lateinit var circleService: CircleService
+
+    @Autowired
+    private lateinit var entityManager: EntityManager
+
+    @Autowired
     private lateinit var circleRepository: CircleRepository
 
     @Autowired
@@ -51,6 +57,7 @@ class CircleServiceTest() {
 
     @BeforeEach
     fun setUp() {
+        entityManager.clear() // 초기화
         createSuccessTestData()
     }
 
@@ -65,7 +72,6 @@ class CircleServiceTest() {
     }
 
     fun createSuccessTestData() {
-        // 테스트 데이터 생성 (실제 데이터베이스에 저장)
         val member = Member(
             name = "Jane Doe",
             nickname = "janedoe",
@@ -135,4 +141,75 @@ class CircleServiceTest() {
             favoriteCircleRepository.save(favoriteCircle)
         }
     }
+
+
+    @Test
+    @Transactional
+    fun `Lazy Loading 테스트 - circleSchedules 정상 로드 확인`() {
+        // Given
+        val savedCircle = createTestCircleWithSchedules()
+
+        // When
+        val circleDetailResponse = circleService.getCircleDetail(savedCircle.id)
+
+        // Then
+        assertNotNull(circleDetailResponse)
+        assertEquals(savedCircle.id, circleDetailResponse.id)
+        assertTrue(circleDetailResponse.circleSchedules.isNotEmpty())
+        assertEquals(2, circleDetailResponse.circleSchedules.size)
+        assertEquals(DayOfWeek.MONDAY, circleDetailResponse.circleSchedules[0].dayOfWeek)
+        assertEquals("10:00", circleDetailResponse.circleSchedules[0].startTime)
+        assertEquals("12:00", circleDetailResponse.circleSchedules[0].endTime)
+    }
+
+    private fun createTestCircleWithSchedules(): Circle {
+        val circle = Circle(
+            leader = createTestMember(),
+            title = "Test Circle",
+            englishLevel = EnglishLevel.BEGINNER,
+            city = City.BUSAN,
+            introduction = "This is a test circle",
+            capacity = 20,
+            attendMode = AttendMode.OFFLINE,
+            contactWay = ContactWay.EMAIL
+        )
+
+        val schedule1 = CircleSchedule(
+            circle = circle,
+            dayOfWeek = DayOfWeek.MONDAY,
+            startTime = "10:00",
+            endTime = "12:00"
+        )
+
+        val schedule2 = CircleSchedule(
+            circle = circle,
+            dayOfWeek = DayOfWeek.WEDNESDAY,
+            startTime = "14:00",
+            endTime = "16:00"
+        )
+
+        circle.circleSchedules.addAll(listOf(schedule1, schedule2))
+
+        entityManager.persist(circle)
+        entityManager.flush() // 영속성 컨텍스트 반영
+        entityManager.clear() // 영속성 컨텍스트 초기화 (Lazy Loading 테스트)
+
+        return circle
+    }
+
+    private fun createTestMember(): Member {
+        val member = Member(
+            name = "John Doe",
+            nickname = "johndoe",
+            email = "johndoe@example.com",
+            hashedPassword = "hashed_password",
+            gender = Gender.M,
+            age = 30,
+            isTermsAgreed = true,
+            isPrivacyAgreed = true
+        )
+        entityManager.persist(member)
+        return member
+    }
+
 }
