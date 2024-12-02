@@ -91,8 +91,9 @@ class CircleService(
         return CircleDetailResponse.fromEntity(circle)
     }
 
-    fun findCirclesByPagination(pageable: Pageable, request: CircleSearchRequest?)
+    fun findCirclesByPagination(member: Member?, pageable: Pageable, request: CircleSearchRequest?)
             : Page<CirclePageResponse?> {
-        return circleRepository.findCirclesByPagination(pageable, request)
+        // 회원/비회원 이용자에 따라 좋아요 필드 조회 여부 Repository 에서 구현
+        return circleRepository.findCirclesByPagination(member, pageable, request)
     }
 }
