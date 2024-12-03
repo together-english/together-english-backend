@@ -54,24 +54,20 @@ class CircleController(
     @Operation(
             summary = "영어 모임 목록 페이지네이션 조회",
             description = "영어 모임 목록을 페이징하여 반환합니다.",
-            security = [SecurityRequirement(name = "Authorization")]
     )
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Successfully retrieved circle pages with schedules."),
         ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data.")
     ])
-    @GetMapping
+    @PostMapping("/list")
     fun findCirclesByPagination(
             @PageableDefault(
                     size = 9, page = 0, sort = ["createdAt"], direction = Sort.Direction.DESC
             ) pageable: Pageable,
-            @Parameter(hidden = true) member: Member?,
-            @RequestParam(required = false) title: String?,
-            @RequestParam(required = false) city: City?,
-            @RequestParam(required = false) level: EnglishLevel?
+            @Valid @RequestBody request: CircleSearchRequest,
     ): ResponseEntity<MainResponse<Page<CirclePageResponse?>>> {
-        val request = CircleSearchRequest(member, title, city, level)
-        val circlesPage = circleService.findCirclesByPagination(member, pageable, request)
+        val request = CircleSearchRequest(request.memberId, request.title, request.city, request.level)
+        val circlesPage = circleService.findCirclesByPagination(pageable, request)
         return ResponseEntity.ok(MainResponse.getSuccessResponse(circlesPage))
     }
 

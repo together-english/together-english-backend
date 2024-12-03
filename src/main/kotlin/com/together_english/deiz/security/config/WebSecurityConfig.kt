@@ -34,6 +34,7 @@ class WebSecurityConfig(
                 authorize("/auth/**", permitAll)
                 authorize(HttpMethod.GET, "/circle/**", permitAll)
                 authorize("/member/**", hasAuthority(Role.USER.authority))
+                authorize(HttpMethod.POST,"/circle/list", permitAll)
                 authorize(HttpMethod.POST,"/circle/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.PUT,"/circle/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.DELETE,"/circle/**", hasAuthority(Role.USER.authority))
