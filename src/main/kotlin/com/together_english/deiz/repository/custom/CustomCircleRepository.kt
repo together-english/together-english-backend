@@ -7,5 +7,5 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface CustomCircleRepository {
-    fun findCirclesByPagination(member: Member?, pageable: Pageable, request: CircleSearchRequest?): Page<CirclePageResponse?>
+    fun findCirclesByPagination(pageable: Pageable, request: CircleSearchRequest?): Page<CirclePageResponse?>
 }

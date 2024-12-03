@@ -15,7 +15,7 @@ class CustomCircleRepositoryImpl(
         private val kotlinJdslJpqlExecutor: KotlinJdslJpqlExecutor
 ) : CustomCircleRepository {
 
-    override fun findCirclesByPagination(member: Member?, pageable: Pageable, request: CircleSearchRequest?)
+    override fun findCirclesByPagination(pageable: Pageable, request: CircleSearchRequest?)
     : Page<CirclePageResponse?> {
             return kotlinJdslJpqlExecutor.findPage(pageable) {
             selectNew<CirclePageResponse>(
@@ -32,7 +32,7 @@ class CustomCircleRepositoryImpl(
                     path(Circle::totalLike),
                     caseWhen(
                             path(FavoriteCircle::member).path(Member::id).isNotNull()
-                                    .and(path(FavoriteCircle::member).path(Member::id).eq(request?.member?.id))
+                                    .and(path(FavoriteCircle::member).path(Member::id).eq(request?.memberId))
                     )
                     .then(true)
                     .`else`(false)
