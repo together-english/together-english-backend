@@ -12,46 +12,53 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class CustomCircleRepositoryImpl(
-        private val kotlinJdslJpqlExecutor: KotlinJdslJpqlExecutor
+    private val kotlinJdslJpqlExecutor: KotlinJdslJpqlExecutor
 ) : CustomCircleRepository {
 
     override fun findCirclesByPagination(pageable: Pageable, request: CircleSearchRequest?)
-    : Page<CirclePageResponse?> {
-            return kotlinJdslJpqlExecutor.findPage(pageable) {
+            : Page<CirclePageResponse?> {
+        return kotlinJdslJpqlExecutor.findPage(pageable) {
             selectNew<CirclePageResponse>(
-                    path(Circle::id),
-                    path(Circle::thumbnailUrl),
-                    path(Circle::title),
-                    path(Circle::introduction),
-                    path(Member::profile).`as`(expression("leaderProfile")),
-                    path(Member::nickname).`as`(expression("leaderName")),
-                    path(Circle::englishLevel),
-                    path(Circle::city),
-                    path(Circle::capacity),
-                    path(Circle::totalView),
-                    path(Circle::totalLike),
-                    caseWhen(
-                            path(FavoriteCircle::member).path(Member::id).isNotNull()
-                                    .and(path(FavoriteCircle::member).path(Member::id).eq(request?.memberId))
-                    )
+                path(Circle::id),
+                path(Circle::thumbnailUrl),
+                path(Circle::title),
+                path(Circle::introduction),
+                path(Member::profile).`as`(expression("leaderProfile")),
+                path(Member::nickname).`as`(expression("leaderName")),
+                path(Circle::englishLevel),
+                path(Circle::city),
+                path(Circle::capacity),
+                path(Circle::totalView),
+                path(Circle::totalLike),
+                caseWhen(
+                    path(FavoriteCircle::member).path(Member::id).isNotNull()
+                        .and(path(FavoriteCircle::member).path(Member::id).eq(request?.memberId))
+                )
                     .then(true)
                     .`else`(false)
                     .`as`(expression("likedByMe"))
             ).from(
-                    entity(Circle::class),
-                    join(Circle::leader),
-                    leftJoin(Circle::favoriteCircle)
-                            .on(
-                                path(FavoriteCircle::circle).path(Circle::id).eq(path(Circle::id))
-                                    .and(path(FavoriteCircle::member).path(Member::id).eq(path(Member::id)))
-                            )
+                entity(Circle::class),
+                join(Circle::leader),
+                leftJoin(Circle::favoriteCircle)
+                    .on(
+                        path(FavoriteCircle::circle).path(Circle::id).eq(path(Circle::id))
+                            .and(path(FavoriteCircle::member).path(Member::id).eq(path(Member::id)))
+                    )
             )
-            .whereAnd(
+                .whereAnd(
                     request?.title?.let { path(Circle::title).like("%$it%") },
                     request?.level?.let { path(Circle::englishLevel).eq(it) },
                     request?.city?.let { path(Circle::city).eq(it) },
-                    path(Circle::valid).eq(true)
-            )
+                    request?.let {
+                        if(it.likeByMeOnly == true && it.memberId != null) {
+                            path(FavoriteCircle::member).path(Member::id).eq(it.memberId)
+                        }else{
+                            null
+                        }
+                    },
+                    path (Circle::valid).eq(true)
+                )
 
         }
     }
