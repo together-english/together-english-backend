@@ -17,5 +17,7 @@ data class CircleSearchRequest(
         @field:Schema(description = "도시 필터", example = "SEOUL")
         val city: City?,
         @field:Schema(description = "영어 수준 필터", example = "BEGINNER")
-        val level: EnglishLevel?
+        val level: EnglishLevel?,
+        @field:Schema(description = "내가 찜한 모임만 조회 여부", example = "true/false")
+        val likeByMeOnly: Boolean? = false,
 )

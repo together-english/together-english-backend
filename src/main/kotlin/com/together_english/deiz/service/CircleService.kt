@@ -93,7 +93,10 @@ class CircleService(
 
     fun findCirclesByPagination(pageable: Pageable, request: CircleSearchRequest?)
             : Page<CirclePageResponse?> {
-        // 회원/비회원 이용자에 따라 좋아요 필드 조회 여부 Repository 에서 구현
+        // 회원/비회원 이용자에 따라 좋아요 필드 조회 여부, 이용자가 좋아요한 모임만 조회 여부 Repository 에서 구현
+        if(request?.likeByMeOnly == true && request.memberId == null){
+            throw RuntimeException("회원 ID가 존재하지 않습니다.(내가 좋아요한 모임 조회)")
+        }
         return circleRepository.findCirclesByPagination(pageable, request)
     }
 }
