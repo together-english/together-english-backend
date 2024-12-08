@@ -15,6 +15,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.TestPropertySource
@@ -67,7 +68,7 @@ class CommentServiceTest {
     }
 
     fun createSuccessTestData() {
-        // 테스트 데이터 생성 (실제 데이터베이스에 저장)
+        // 테스트 데이터 생성
         val member = Member(
             name = "Jane Doe",
             nickname = "janedoe",
@@ -225,5 +226,74 @@ class CommentServiceTest {
 
         // Then
         assertThrows(IllegalArgumentException::class.java) { require(comment.isWrittenBy(anotherMember)) { "댓글 작성자만 수정 가능합니다." } }
+    }
+
+    @Test
+    fun delete_CircleComment_success() {
+        // Given
+        val circleComment = CircleComment(
+            content = "This is test comment",
+            circle = savedCircle,
+            member = savedMember
+        )
+        val savedComment = commentRepository.save(circleComment)
+
+        // When
+        savedComment.deleteComment()
+
+        // Then
+        assertEquals(savedComment.status, CommentStatus.DELETED)
+    }
+
+    @Test
+    fun delete_CircleComment_fail_already_deleted() {
+        // Given
+        val circleComment = CircleComment(
+            content = "This is test comment",
+            circle = savedCircle,
+            member = savedMember
+        )
+        val savedComment = commentRepository.save(circleComment)
+        savedComment.deleteComment()
+
+        // When
+        val exception = assertThrows<Exception> {
+            if (savedComment.status == CommentStatus.DELETED) {
+                throw Exception("이미 삭제처리된 댓글입니다.")
+            }
+        }
+
+        // Then
+        assertEquals("이미 삭제처리된 댓글입니다.", exception.message)
+    }
+
+    @Test
+    fun delete_CircleComment_fail_no_permission() {
+        // Given
+        val anotherMember = Member(
+            name = "another",
+            nickname = "another",
+            email = "another@example.com",
+            hashedPassword = "password123",
+            gender = Gender.F,
+            age = 28,
+            isTermsAgreed = true,
+            isPrivacyAgreed = true
+        )
+        val circleComment = CircleComment(
+            content = "This is test comment",
+            circle = savedCircle,
+            member = savedMember
+        )
+        val savedComment = commentRepository.save(circleComment)
+
+        // When
+        val exception = assertThrows<Exception> {
+            require(savedComment.isWrittenBy(anotherMember)) { throw Exception("댓글 작성자만 수정 가능합니다.") }
+        }
+        savedComment.deleteComment()
+
+        // Then
+        assertEquals("댓글 작성자만 수정 가능합니다.", exception.message)
     }
 }

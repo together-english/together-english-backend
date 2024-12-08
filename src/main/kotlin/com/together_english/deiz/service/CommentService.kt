@@ -31,6 +31,11 @@ class CommentService(
     }
 
     @Transactional
+    fun findCommentsByPagination(pageable: Pageable, request: UUID): Page<CommentPageResponse?> {
+        return commentRepository.findByCircleIdAndStatus(pageable, request, CommentStatus.ACTIVE)
+    }
+
+    @Transactional
     fun updateCircleComment(request: CommentUpdateRequest, member: Member): String {
         require(request.content.length > 2) { "댓글은 2글자 이상으로 작성해야합니다." }
 
@@ -43,7 +48,12 @@ class CommentService(
     }
 
     @Transactional
-    fun findCommentsByPagination(pageable: Pageable, request: UUID): Page<CommentPageResponse?> {
-        return commentRepository.findByCircleIdAndStatus(pageable, request, CommentStatus.ACTIVE)
+    fun deleteCircleComment(commentId: UUID, member: Member) {
+        val comment = commentRepository.findById(commentId)
+            .orElseThrow { NoSuchElementException("comment id : $commentId not found") }
+
+        if(comment.status == CommentStatus.DELETED) { throw Exception("이미 삭제처리된 댓글입니다.") }
+        require(comment.isWrittenBy(member)) { "댓글 작성자만 삭제 가능합니다." }
+        comment.deleteComment()
     }
 }

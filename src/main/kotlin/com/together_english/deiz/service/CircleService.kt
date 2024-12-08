@@ -67,6 +67,10 @@ class CircleService(
     @Transactional
     fun addFavoriteToCircle(id: UUID, member: Member) {
         val circle = circleRepository.findById(id).orElseThrow { NotExistException("circle id: $id") }
+        if (!circle.valid) {
+            throw NotExistException("circle id: ${circle.id}")
+        }
+
         val existFavoriteCircle = favoriteCircleRepository.findByCircleAndMember(circle, member)
         if (existFavoriteCircle != null) {
             throw AlreadyExistException("모임 좋아요 기록(circle id: ${existFavoriteCircle.circle.id.toString()})")
@@ -86,7 +90,7 @@ class CircleService(
     }
 
     @Transactional(readOnly = true)
-    fun getCircleDetail(id: UUID) : CircleDetailResponse {
+    fun getCircleDetail(id: UUID): CircleDetailResponse {
         val circle = circleRepository.findById(id).orElseThrow { NotExistException("circle id: $id") }
         return CircleDetailResponse.fromEntity(circle)
     }
@@ -94,7 +98,7 @@ class CircleService(
     fun findCirclesByPagination(pageable: Pageable, request: CircleSearchRequest?)
             : Page<CirclePageResponse?> {
         // 회원/비회원 이용자에 따라 좋아요 필드 조회 여부, 이용자가 좋아요한 모임만 조회 여부 Repository 에서 구현
-        if(request?.likeByMeOnly == true && request.memberId == null){
+        if (request?.likeByMeOnly == true && request.memberId == null) {
             throw RuntimeException("회원 ID가 존재하지 않습니다.(내가 좋아요한 모임 조회)")
         }
         return circleRepository.findCirclesByPagination(pageable, request)

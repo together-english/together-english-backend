@@ -88,6 +88,6 @@ class CustomCircleRepositoryImplTest {
         assertEquals(circle.city, circleResponse?.city)
         assertEquals(circle.capacity, circleResponse?.capacity)
         assertEquals(circle.totalView, circleResponse?.totalView)
-        assertEquals(circle.totalLike, circleResponse?.totalLike)
+        assertEquals(circle.totalLike, circleResponse?.totalLike?.toInt())
     }
 }

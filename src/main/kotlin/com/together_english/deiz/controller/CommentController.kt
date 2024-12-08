@@ -48,26 +48,6 @@ class CommentController(private val commentService: CommentService) {
     }
 
     @Operation(
-        summary = "댓글 업데이트",
-        description = "댓글을 업데이트합니다. 반환 값(SUCCESS/FAIL)",
-        security = [SecurityRequirement(name = "Authorization")]
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "200", description = "Comment updated : SUCCESS"),
-            ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data."),
-        ]
-    )
-    @PatchMapping()
-    fun updateCircleComment(
-        @Valid @RequestBody request: CommentUpdateRequest,
-        @Parameter(hidden = true) member: Member
-    ): ResponseEntity<MainResponse<String>> {
-        val commentId = commentService.updateCircleComment(request, member)
-        return ResponseEntity.ok(getSuccessResponse("Comment updated : $commentId"))
-    }
-
-    @Operation(
         summary = "댓글 목록 조회",
         description = "영어 모임의 댓글 목록을 조회합니다.",
         security = [SecurityRequirement(name = "Authorization")]
@@ -89,5 +69,45 @@ class CommentController(private val commentService: CommentService) {
     ): ResponseEntity<MainResponse<Page<CommentPageResponse?>>> {
         val commentPage = commentService.findCommentsByPagination(pageable, circleId)
         return ResponseEntity.ok(MainResponse.getSuccessResponse(commentPage))
+    }
+
+    @Operation(
+        summary = "댓글 업데이트",
+        description = "댓글을 업데이트합니다. 반환 값(SUCCESS/FAIL)",
+        security = [SecurityRequirement(name = "Authorization")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Comment updated : SUCCESS"),
+            ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data."),
+        ]
+    )
+    @PatchMapping()
+    fun updateCircleComment(
+        @Valid @RequestBody request: CommentUpdateRequest,
+        @Parameter(hidden = true) member: Member
+    ): ResponseEntity<MainResponse<String>> {
+        val commentId = commentService.updateCircleComment(request, member)
+        return ResponseEntity.ok(getSuccessResponse("Comment updated : $commentId"))
+    }
+
+    @Operation(
+        summary = "댓글 삭제(상태변경)",
+        description = "댓글을 삭제(상태변경)합니다. 반환 값(SUCCESS/FAIL)",
+        security = [SecurityRequirement(name = "Authorization")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Comment deleted : SUCCESS"),
+            ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data."),
+        ]
+    )
+    @DeleteMapping("/{commentId}")
+    fun deleteCircleComment(
+        @PathVariable(required = true) commentId: UUID,
+        @Parameter(hidden = true) member: Member,
+    ): ResponseEntity<MainResponse<String>> {
+        commentService.deleteCircleComment(commentId, member)
+        return ResponseEntity.ok(getSuccessResponse("Comment deleted : $commentId"))
     }
 }
