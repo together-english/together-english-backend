@@ -29,7 +29,7 @@ class CustomCircleRepositoryImpl(
                 path(Circle::city),
                 path(Circle::capacity),
                 path(Circle::totalView),
-                path(Circle::totalLike),
+                count(entity(FavoriteCircle::class, "totalFavorite").path(FavoriteCircle::circle)).`as`(expression("totalLike")),
                 caseWhen(
                     path(FavoriteCircle::member).path(Member::id).isNotNull()
                         .and(path(FavoriteCircle::member).path(Member::id).eq(request?.memberId))
@@ -44,7 +44,11 @@ class CustomCircleRepositoryImpl(
                     .on(
                         path(FavoriteCircle::circle).path(Circle::id).eq(path(Circle::id))
                             .and(path(FavoriteCircle::member).path(Member::id).eq(path(Member::id)))
-                    )
+                    ),
+                leftJoin(Circle::favoriteCircle)
+                    .on(
+                        path(FavoriteCircle::circle).path(Circle::id).eq(path(Circle::id))
+                    ).`as`(entity(FavoriteCircle::class, "totalFavorite"))
             )
                 .whereAnd(
                     request?.title?.let { path(Circle::title).like("%$it%") },
@@ -59,7 +63,19 @@ class CustomCircleRepositoryImpl(
                     },
                     path (Circle::valid).eq(true)
                 )
-
+                .groupBy(
+                    path(Circle::id),
+                    path(Circle::thumbnailUrl),
+                    path(Circle::title),
+                    path(Circle::introduction),
+                    path(Member::profile),
+                    path(Member::nickname),
+                    path(Circle::englishLevel),
+                    path(Circle::city),
+                    path(Circle::capacity),
+                    path(Circle::totalView),
+                    path(FavoriteCircle::member).path(Member::id),
+                )
         }
     }
 }
