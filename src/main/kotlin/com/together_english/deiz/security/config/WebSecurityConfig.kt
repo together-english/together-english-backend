@@ -6,8 +6,6 @@ import com.together_english.deiz.security.util.CustomAuthenticationEntryPoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
@@ -15,7 +13,6 @@ import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.web.cors.CorsConfigurationSource
 
 @Configuration
@@ -32,16 +29,20 @@ class WebSecurityConfig(
             authorizeHttpRequests {
                 authorize("/", permitAll)
                 authorize("/auth/**", permitAll)
-                authorize(HttpMethod.GET, "/circle/**", permitAll)
                 authorize("/member/**", hasAuthority(Role.USER.authority))
+
+                authorize(HttpMethod.GET, "/circle/**", permitAll)
                 authorize(HttpMethod.POST,"/circle/list", permitAll)
                 authorize(HttpMethod.POST,"/circle/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.PUT,"/circle/**", hasAuthority(Role.USER.authority))
+                authorize(HttpMethod.PATCH,"/circle/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.DELETE,"/circle/**", hasAuthority(Role.USER.authority))
+
                 authorize(HttpMethod.GET, "/comment/**", permitAll)
                 authorize(HttpMethod.POST,"/comment/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.PATCH,"/comment/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.DELETE,"/comment/**", hasAuthority(Role.USER.authority))
+
                 authorize("/h2-console/**", permitAll)
                 authorize("/swagger-ui/**", permitAll)
                 authorize("api-docs/**", permitAll)
