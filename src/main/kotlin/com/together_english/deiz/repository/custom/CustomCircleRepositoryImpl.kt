@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class CustomCircleRepositoryImpl(
-    private val kotlinJdslJpqlExecutor: KotlinJdslJpqlExecutor
+    private val kotlinJdslJpqlExecutor: KotlinJdslJpqlExecutor,
 ) : CustomCircleRepository {
 
     override fun findCirclesByPagination(pageable: Pageable, request: CircleSearchRequest?)
