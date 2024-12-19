@@ -255,4 +255,44 @@ class CircleController(
         return ResponseEntity.ok(getSuccessResponse("Circle Join Request successfully updated : $circleJoinRequestId"))
     }
 
+    @Operation(
+        summary = "영어 모임 참가 요청 승인",
+        description = "영어 모임에 참가요청을 승인합니다.",
+        security = [SecurityRequirement(name = "Authorization")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Circle Join Request approved successfully"),
+            ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data.")
+        ]
+    )
+    @PostMapping("/join-requests/{circleJoinRequestId}/approve")
+    fun approveCircleJoinRequest(
+        @PathVariable circleJoinRequestId: UUID,
+        @Parameter(hidden = true) member: Member
+    ): ResponseEntity<MainResponse<String>> {
+        val circleMemberId = circleService.approveCircleJoinRequest(circleJoinRequestId, member)
+        return ResponseEntity.ok(getSuccessResponse("Circle Join Request successfully approved circle_member id: $circleMemberId"))
+    }
+
+    @Operation(
+        summary = "영어 모임 참가 요청 거절",
+        description = "영어 모임에 참가요청을 거절합니다.",
+        security = [SecurityRequirement(name = "Authorization")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Circle Join Request rejected successfully"),
+            ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data.")
+        ]
+    )
+    @PostMapping("/join-requests/{circleJoinRequestId}/reject")
+    fun rejectCircleJoinRequest(
+        @PathVariable circleJoinRequestId: UUID,
+        @Parameter(hidden = true) member: Member
+    ): ResponseEntity<MainResponse<String>> {
+        circleService.rejectCircleJoinRequest(circleJoinRequestId, member)
+        return ResponseEntity.ok(getSuccessResponse("Circle Join Request rejected circleJoinRequestId : $circleJoinRequestId"))
+    }
+
 }

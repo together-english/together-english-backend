@@ -33,13 +33,19 @@ class CircleJoinRequest(
 
     @Column(name = "message", length = 3000)
     var message: String = message
+    private set
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 32, nullable = false)
     var status: CircleJoinStatus = CircleJoinStatus.WAITING
+    private set
 
     fun updateMessage(request: CircleJoinUpdateRequestDTO) {
         this.message = request.message
+    }
+
+    fun updateStatus(newStatus: CircleJoinStatus) {
+        this.status = newStatus
     }
 
     fun isWrittenBy(member: Member): Boolean {
@@ -55,6 +61,13 @@ class CircleJoinRequest(
             age = this.member.age,
             message = this.message,
             status = this.status
+        )
+    }
+
+    fun toCircleMemberEntity(): CircleMember {
+        return CircleMember(
+            member = this.member,
+            circle = this.circle,
         )
     }
 }
