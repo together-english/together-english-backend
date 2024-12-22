@@ -28,8 +28,8 @@ data class CirclePageResponse(
         @Schema(description = "총 조회 수", example = "150")
         val totalView: Int,
         @Schema(description = "총 좋아요 수", example = "30")
-        val totalLike: Int,
-) {
+        val totalLike: Long,
         @Schema(description = "내가 좋아요를 눌렀는지 여부", example = "false")
-        val likedByMe: Boolean = false
+        val likedByMe: Boolean? = false
+) {
 }

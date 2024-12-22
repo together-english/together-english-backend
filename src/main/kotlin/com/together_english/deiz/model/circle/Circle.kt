@@ -119,4 +119,8 @@ class Circle(
     fun delete() {
         this.valid = false
     }
+
+    fun isWrittenBy(member: Member): Boolean {
+        return this.leader.id == member.id
+    }
 }

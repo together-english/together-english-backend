@@ -6,11 +6,14 @@ import com.together_english.deiz.model.circle.CircleStatus
 import com.together_english.deiz.model.circle.ContactWay
 import com.together_english.deiz.model.common.City
 import com.together_english.deiz.model.common.EnglishLevel
+import io.swagger.v3.oas.annotations.media.Schema
 import java.util.*
 
 data class CircleDetailResponse(
         val id: UUID,
         val title: String,
+        val leaderProfile: String? = null,
+        val leaderName: String,
         val englishLevel: EnglishLevel,
         val city: City,
         val thumbnail: String? = null,
@@ -22,7 +25,8 @@ data class CircleDetailResponse(
         val contactWay: ContactWay,
         val onlineUrl: String? = null,
         val totalView: Int = 0,
-        val weekView: Int = 0
+        val weekView: Int = 0,
+        val circleSchedules: List<CircleScheduleDto>
 ) {
     companion object {
         fun fromEntity(circle: Circle): CircleDetailResponse {
@@ -31,16 +35,25 @@ data class CircleDetailResponse(
                     title = circle.title,
                     englishLevel = circle.englishLevel,
                     city = circle.city,
+                    leaderProfile = circle.leader.profile,
+                    leaderName = circle.leader.name,
                     thumbnail = circle.thumbnailUrl,
                     introduction = circle.introduction,
                     address = circle.address,
-                    capacity = circle.capacity.toInt(),
+                    capacity = circle.capacity,
                     circleStatus = circle.circleStatus,
                     attendMode = circle.attendMode,
                     contactWay = circle.contactWay,
                     onlineUrl = circle.onlineUrl,
                     totalView = circle.totalView,
-                    weekView = circle.weekView
+                    weekView = circle.weekView,
+                    circleSchedules = circle.circleSchedules.map {
+                            CircleScheduleDto(
+                                    dayOfWeek = it.dayOfWeek,
+                                    startTime = it.startTime,
+                                    endTime = it.endTime
+                            )
+                    }
             )
         }
     }
