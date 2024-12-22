@@ -43,11 +43,11 @@ class CustomCircleRepositoryImpl(
                 leftJoin(Circle::favoriteCircle)
                     .on(
                         path(FavoriteCircle::circle).path(Circle::id).eq(path(Circle::id))
-                            .and(path(FavoriteCircle::member).path(Member::id).eq(path(Member::id)))
+                            .and(path(FavoriteCircle::member).path(Member::id).eq(request?.memberId))
                     ),
                 leftJoin(Circle::favoriteCircle)
                     .on(
-                        path(FavoriteCircle::circle).path(Circle::id).eq(path(Circle::id))
+                        path(Circle::id).eq(path(Circle::id))
                     ).`as`(entity(FavoriteCircle::class, "totalFavorite"))
             )
                 .whereAnd(

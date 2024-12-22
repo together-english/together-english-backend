@@ -41,7 +41,7 @@ class CircleService(
             member = member,
             circle = circle,
         )
-         circleMemberToSave.updateStatus(CircleMember.CircleRole.LEADER)
+        circleMemberToSave.updateStatus(CircleMember.CircleRole.LEADER)
         circleMemberRepository.save(circleMemberToSave)
 
         return circle.id.toString()
@@ -83,7 +83,7 @@ class CircleService(
 
         val existFavoriteCircle = favoriteCircleRepository.findByCircleAndMember(circle, member)
         if (existFavoriteCircle != null) {
-            throw AlreadyExistException("모임 좋아요 기록(circle id: ${existFavoriteCircle.circle.id.toString()})")
+            throw AlreadyExistException("모임 좋아요 기록(circle id: ${existFavoriteCircle.circle.id})")
         }
 
         val favoriteCircle = FavoriteCircle(circle, member)
@@ -94,7 +94,7 @@ class CircleService(
     fun removeFavoriteToCircle(id: UUID, member: Member) {
         val circle = circleRepository.findById(id).orElseThrow { NotExistException("circle id: $id") }
         val favoriteCircle = favoriteCircleRepository.findByCircleAndMember(circle, member)
-            ?: throw NotExistException("모임 좋아요 기록(circle id: ${id.toString()})")
+            ?: throw NotExistException("모임 좋아요 기록(circle id: ${id})")
 
         favoriteCircleRepository.delete(favoriteCircle)
     }
@@ -111,9 +111,7 @@ class CircleService(
             .orElseThrow { NotExistException("circle id: ${request.circleId}") }
 
         val circleMember = circleMemberRepository.findByCircleAndMember(circle, member)
-        if (!circleMember.isEmpty) {
-            throw IllegalArgumentException("이미 모임에 가입된 회원입니다. circle id : ${request.circleId}")
-        }
+        require(circleMember.isEmpty) { "이미 모임에 가입된 회원입니다. circle id : ${request.circleId}" }
 
         val existJoinRequest = circleJoinRepository.existsByCircleIdAndMemberId(circle.id, member.id)
         if (existJoinRequest) {
@@ -184,6 +182,23 @@ class CircleService(
         require(circleJoinRequest.status == CircleJoinStatus.WAITING) { "모임 가입요청이 대기상태인 경우만 거절 가능합니다. 현재 상태: ${circleJoinRequest.status}" }
 
         circleJoinRequest.updateStatus(CircleJoinStatus.REJECTED)
+    }
+
+    fun findMemberByCircleList(circleId: UUID, member: Member, pageable: Pageable): Page<CircleMemberPageResponse?> {
+        val isCircleMember = circleMemberRepository.existsByCircleIdAndMemberId(circleId, member.id)
+        require(isCircleMember) { "모임에 가입된 멤버만 조회 가능합니다. circleId : $circleId" }
+
+        val circleMemberList = circleMemberRepository.findMemberByCircle(circleId, pageable)
+        return circleMemberList
+    }
+
+    fun findMemberDetailsByCircle(circleMemberId: UUID, member: Member): CircleMemberDetailResponse {
+        val memberDetailByCircle = circleMemberRepository.findMemberDetailsByCircle(circleMemberId)
+
+        val isCircleMember = circleMemberRepository.existsByCircleIdAndMemberId(memberDetailByCircle.circleId, member.id)
+        require(isCircleMember) { "모임에 가입된 멤버만 조회 가능합니다. circleId : ${memberDetailByCircle.circleId}" }
+
+        return memberDetailByCircle
     }
 
     fun findCirclesByPagination(pageable: Pageable, request: CircleSearchRequest?)
