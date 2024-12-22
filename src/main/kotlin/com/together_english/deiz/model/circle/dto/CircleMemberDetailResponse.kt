@@ -14,7 +14,7 @@ data class CircleMemberDetailResponse(
     @Schema(description = "멤버 이메일", example = "kodh10@gmail.com")
     val email: String,
     @Schema(description = "멤버 프로필", example = "profile.com")
-    val profile: String,
+    val profile: String?,
     @Schema(description = "멤버 성별", example = "F, M, NO")
     val gender : Gender,
     @Schema(description = "멤버 나이", example = "29")
