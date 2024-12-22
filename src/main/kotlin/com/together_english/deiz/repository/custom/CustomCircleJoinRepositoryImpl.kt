@@ -1,6 +1,7 @@
 package com.together_english.deiz.repository.custom
 
 import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpqlExecutor
+import com.together_english.deiz.model.circle.Circle
 import com.together_english.deiz.model.circle.CircleJoinRequest
 import com.together_english.deiz.model.circle.dto.CircleJoinDetailResponse
 import com.together_english.deiz.model.member.entity.Member
@@ -29,8 +30,10 @@ class CustomCircleJoinRepositoryImpl(
                 join(CircleJoinRequest::member),
             ).whereAnd(
                 path(CircleJoinRequest::id).eq(circleJoinRequestId),
+                path(Circle::valid).eq(true),
+                path(Member::valid).eq(true)
             )
-        }.single()
+        }.singleOrNull()
         return result
     }
 }

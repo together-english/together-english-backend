@@ -20,7 +20,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import java.util.UUID
+import java.util.*
 
 
 @RestController
@@ -293,6 +293,49 @@ class CircleController(
     ): ResponseEntity<MainResponse<String>> {
         circleService.rejectCircleJoinRequest(circleJoinRequestId, member)
         return ResponseEntity.ok(getSuccessResponse("Circle Join Request rejected circleJoinRequestId : $circleJoinRequestId"))
+    }
+
+    @Operation(
+        summary = "가입한 영어모임 멤버 정보 목록조회",
+        description = "가입한 영어모임의 사용자들의 목록을 조회합니다.",
+        security = [SecurityRequirement(name = "Authorization")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Successfully retrieved circle member."),
+            ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data")
+        ]
+    )
+    @GetMapping("{circleId}/member")
+    fun findMemberByCircleList(
+        @PathVariable circleId: UUID,
+        @PageableDefault(
+            size = 10, page = 0, sort = ["updatedAt"], direction = Sort.Direction.DESC
+        ) pageable: Pageable,
+        @Parameter(hidden = true) member: Member
+    ): ResponseEntity<MainResponse<Page<CircleMemberPageResponse?>>> {
+        val circleMemberList = circleService.findMemberByCircleList(circleId, member, pageable)
+        return ResponseEntity.ok(getSuccessResponse(circleMemberList))
+    }
+
+    @Operation(
+        summary = "가입한 영어모임 멤버정보 상세조회",
+        description = "가입한 영어모임의 사용자의 정보를 상세조회합니다.",
+        security = [SecurityRequirement(name = "Authorization")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Successfully retrieved circle member."),
+            ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data")
+        ]
+    )
+    @GetMapping("/member/{circleMemberId}")
+    fun findMemberDetailsByCircle(
+        @PathVariable circleMemberId: UUID,
+        @Parameter(hidden = true) member: Member
+    ): ResponseEntity<MainResponse<CircleMemberDetailResponse>> {
+        val memberDetailByCircle = circleService.findMemberDetailsByCircle(circleMemberId, member)
+        return ResponseEntity.ok(getSuccessResponse(memberDetailByCircle))
     }
 
 }
