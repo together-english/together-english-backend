@@ -31,6 +31,7 @@ class WebSecurityConfig(
                 authorize("/auth/**", permitAll)
                 authorize("/member/**", hasAuthority(Role.USER.authority))
 
+                authorize(HttpMethod.GET, "/circle/{circleId}/member", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.GET, "/circle/**", permitAll)
                 authorize(HttpMethod.POST,"/circle/list", permitAll)
                 authorize(HttpMethod.POST,"/circle/**", hasAuthority(Role.USER.authority))
