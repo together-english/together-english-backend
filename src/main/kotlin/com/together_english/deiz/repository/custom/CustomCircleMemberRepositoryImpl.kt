@@ -70,7 +70,8 @@ class CustomCircleMemberRepositoryImpl(
         val result =
             kotlinJdslJpqlExecutor.findPage(pageable) {
                 selectNew<MyJoinedCirclePageResponse>(
-                    path(Circle::id),
+                    path(Circle::id).`as`(expression("circleId")),
+                    path(CircleMember::id).`as`(expression("circleMemberId")),
                     path(Circle::thumbnailUrl),
                     path(Circle::title),
                     path(Circle::introduction),
@@ -107,6 +108,7 @@ class CustomCircleMemberRepositoryImpl(
                     path(Member::valid).eq(true)
                 ).groupBy(
                         path(Circle::id),
+                        path(CircleMember::id),
                         path(Circle::thumbnailUrl),
                         path(Circle::title),
                         path(Circle::introduction),

@@ -10,9 +10,6 @@ import java.util.UUID
 @Entity
 @Table(
     name = "circle_join_request",
-    uniqueConstraints = [
-        UniqueConstraint(name = "uk_circle_member", columnNames = ["circle_id", "member_id"])
-    ]
 )
 class CircleJoinRequest(
     circle: Circle,
