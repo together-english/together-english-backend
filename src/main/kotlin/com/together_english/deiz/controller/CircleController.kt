@@ -338,4 +338,43 @@ class CircleController(
         return ResponseEntity.ok(getSuccessResponse(memberDetailByCircle))
     }
 
+    @Operation(
+        summary = "가입한 영어모임 탈퇴",
+        description = "가입한 영어모임을 탈퇴합니다.",
+        security = [SecurityRequirement(name = "Authorization")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Successfully retrieved circle member."),
+            ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data")
+        ]
+    )
+    @DeleteMapping("/member/{circleMemberId}")
+    fun leaveCircleMember(
+        @PathVariable circleMemberId: UUID,
+        @Parameter(hidden = true) member: Member
+    ): ResponseEntity<MainResponse<String>> {
+        circleService.leaveCircleMember(circleMemberId, member)
+        return ResponseEntity.ok(getSuccessResponse("Circle Leave Member Successfully circleMemberId : $circleMemberId"))
+    }
+
+    @Operation(
+        summary = "가입한 영어모임 추방(리더권한)",
+        description = "가입한 영어모임의 멤버를 추방합니다.(리더권한)",
+        security = [SecurityRequirement(name = "Authorization")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Successfully retrieved circle member."),
+            ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data")
+        ]
+    )
+    @DeleteMapping("/member/{circleMemberId}/banish")
+    fun banishedCircleMember(
+        @PathVariable circleMemberId: UUID,
+        @Parameter(hidden = true) member: Member
+    ) : ResponseEntity<MainResponse<String>> {
+        circleService.banishedCircleMember(circleMemberId, member)
+        return ResponseEntity.ok(getSuccessResponse("Circle Banished Member Successfully circleMemberId : $circleMemberId"))
+    }
 }

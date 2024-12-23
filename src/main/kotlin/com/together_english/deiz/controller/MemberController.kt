@@ -1,6 +1,7 @@
 package com.together_english.deiz.controller
 
 import com.together_english.deiz.model.common.MainResponse
+import com.together_english.deiz.model.member.dto.MyCreatedCirclePageResponse
 import com.together_english.deiz.model.member.dto.MyJoinedCirclePageResponse
 import com.together_english.deiz.model.member.dto.MyPageResponse
 import com.together_english.deiz.model.member.dto.MyPageUpdateRequest
@@ -107,4 +108,27 @@ class MemberController(
         val myJoinedCircleList = memberService.getMyJoinedCircleList(member, pageable)
         return ResponseEntity.ok(MainResponse.getSuccessResponse(myJoinedCircleList))
     }
+
+    @Operation(
+        summary = "내 창설모임 정보 목록조회",
+        description = "내가 창설한 모임의 정보 목록을 조회합니다.",
+        security = [SecurityRequirement(name = "Authorization")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Operation completed successfully."),
+            ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data.")
+        ]
+    )
+    @GetMapping("/my/created-circles")
+    fun getMyCreatedCircleList(
+        @PageableDefault(
+            size = 10, page = 0
+        ) pageable: Pageable,
+        @Parameter(hidden = true) member: Member
+    ) : ResponseEntity<MainResponse<Page<MyCreatedCirclePageResponse?>>>{
+        val myCreatedCircleList = memberService.getMyCreatedCircleList(member, pageable)
+        return ResponseEntity.ok(MainResponse.getSuccessResponse(myCreatedCircleList))
+    }
+
 }
