@@ -8,9 +8,6 @@ import java.util.*
 @Entity
 @Table(
     name = "circle_member",
-    uniqueConstraints = [
-        UniqueConstraint(name = "uk_circle_member2", columnNames = ["circle_id", "member_id"])
-    ],
     indexes = [
         Index(name = "idx_circle_member_circle_member", columnList = "circle_id, member_id")
     ]
@@ -40,8 +37,12 @@ class CircleMember(
     var status: CircleMemberStatus = CircleMemberStatus.NORMAL
     private set
 
-    fun updateStatus(newRole: CircleRole) {
+    fun updateRole(newRole: CircleRole) {
         this.role = newRole
+    }
+
+    fun updateStatus(newStatus: CircleMemberStatus) {
+        this.status = newStatus
     }
 
     enum class CircleRole {
