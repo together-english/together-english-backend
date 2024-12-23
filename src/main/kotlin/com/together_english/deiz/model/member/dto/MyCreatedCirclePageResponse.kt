@@ -5,12 +5,10 @@ import com.together_english.deiz.model.common.EnglishLevel
 import io.swagger.v3.oas.annotations.media.Schema
 import java.util.*
 
-@Schema(description = "내가 가입한 모임 리스트 조회 응답")
-data class MyJoinedCirclePageResponse(
+@Schema(description = "내가 창설한 모임 리스트 조회 응답")
+data class MyCreatedCirclePageResponse(
     @Schema(description = "서클 ID", example = "FWEHFEWD32532332")
-    val circleId: UUID,
-    @Schema(description = "서클멤버 ID", example = "FWEHFEWD32532332")
-    val circleMemberId: UUID,
+    val id: UUID,
     @Schema(description = "썸네일 URL", example = "thumbnail.link.com")
     val thumbnailUrl: String? = null,
     @Schema(description = "서클 제목", example = "영어 스터디 그룹")

@@ -10,4 +10,10 @@ import java.util.*
 interface CircleMemberRepository: JpaRepository<CircleMember, UUID>, CustomCircleMemberRepository {
     fun findByCircleAndMember(circle: Circle, member: Member): Optional<CircleMember>
     fun existsByCircleIdAndMemberId(circleId: UUID, memberId: UUID): Boolean
+    fun findByIdAndMember(id: UUID, member: Member): Optional<CircleMember>
+    fun findByCircleAndMemberAndStatusIsNot(
+        circle: Circle,
+        member: Member,
+        status: CircleMember.CircleMemberStatus
+    ): Optional<CircleMember>
 }
