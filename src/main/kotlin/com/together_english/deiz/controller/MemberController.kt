@@ -130,5 +130,6 @@ class MemberController(
         val myCreatedCircleList = memberService.getMyCreatedCircleList(member, pageable)
         return ResponseEntity.ok(MainResponse.getSuccessResponse(myCreatedCircleList))
     }
-
+//
+//
 }
