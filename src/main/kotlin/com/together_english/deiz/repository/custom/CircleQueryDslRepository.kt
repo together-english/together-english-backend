@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.Expressions
 import org.springframework.stereotype.Repository
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.together_english.deiz.model.circle.QCircle.circle
+import com.together_english.deiz.model.circle.QFavoriteCircle.favoriteCircle
 import com.together_english.deiz.model.circle.dto.CirclePageResponse
 import com.together_english.deiz.model.circle.dto.CircleSearchRequest
 import com.together_english.deiz.model.circle.dto.QCirclePageResponse
@@ -47,6 +48,39 @@ class CircleQueryDslRepository(
         return PageImpl(results, pageable, jpaQuery.fetchCount());
     }
 
+    fun searchPageForMember(pageable: Pageable, request: CircleSearchRequest?): Page<CirclePageResponse> {
+        val builder = createDynamicCondition(request)
+        val isLikedByMe = Expressions.booleanTemplate("case when {0} is not null then true else false end", favoriteCircle)
+        val jpaQuery = queryFactory.select(
+            QCirclePageResponse(
+                circle.id,
+                circle.thumbnailUrl,
+                circle.title,
+                circle.introduction,
+                member.profile,
+                member.nickname,
+                circle.englishLevel,
+                circle.city,
+                circle.capacity,
+                circle.totalView,
+                circle.totalLike,
+                isLikedByMe
+            )
+        ).from(circle)
+            .innerJoin(member).on(circle.leader.eq(member))
+            .leftJoin(favoriteCircle)
+            .on(favoriteCircle.circle.id.eq(circle.id)
+                .and(favoriteCircle.member.id.eq(request!!.memberId)))
+            .where(builder)
+            .orderBy(circle.createdAt.desc())
+
+        val results = jpaQuery.offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
+            .fetch()
+
+        return PageImpl(results, pageable, jpaQuery.fetchCount());
+    }
+
     private fun createDynamicCondition(request: CircleSearchRequest?) : BooleanBuilder {
         val builder = BooleanBuilder()
 
@@ -58,6 +92,11 @@ class CircleQueryDslRepository(
         }
         request?.level?.let {
             builder.and(circle.englishLevel.eq(request.level))
+        }
+        request?.likeByMeOnly?.let {
+            if (request.likeByMeOnly) {
+                builder.and(favoriteCircle.member.id.eq(request.memberId))
+            }
         }
 
         return builder

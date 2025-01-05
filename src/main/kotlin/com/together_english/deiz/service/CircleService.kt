@@ -277,7 +277,11 @@ class CircleService(
 
     fun findCirclesByPagination(pageable: Pageable, request: CircleSearchRequest?)
             : Page<CirclePageResponse> {
-        return circleQueryDslRepository.searchPageForAnonymous(request = request, pageable = pageable)
+        return if (request?.memberId != null) {
+            circleQueryDslRepository.searchPageForMember(request = request, pageable = pageable)
+        } else {
+            circleQueryDslRepository.searchPageForAnonymous(request = request, pageable = pageable)
+        }
     }
 
 }
