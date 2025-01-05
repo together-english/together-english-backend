@@ -1,12 +1,13 @@
 package com.together_english.deiz.model.circle.dto
 
+import com.querydsl.core.annotations.QueryProjection
 import com.together_english.deiz.model.common.City
 import com.together_english.deiz.model.common.EnglishLevel
 import java.util.UUID
 import io.swagger.v3.oas.annotations.media.Schema
 
 @Schema(description = "서클 페이지 조회 응답")
-data class CirclePageResponse(
+data class CirclePageResponse @QueryProjection constructor(
         @Schema(description = "서클 ID", example = "FWEHFEWD32532332")
         val id: UUID,
         @Schema(description = "썸네일 URL", example = "thumbnail.link.com")
@@ -17,7 +18,7 @@ data class CirclePageResponse(
         val introduction: String = "",
         @Schema(description = "리더 프로필 URL", example = "leader.profile.link.com")
         val leaderProfile: String? = null,
-        @Schema(description = "리더 이름", example = "홍길동")
+        @Schema(description = "리더 닉네임", example = "홍길동")
         val leaderName: String,
         @Schema(description = "영어 수준", example = "INTERMEDIATE")
         val englishLevel: EnglishLevel,
@@ -28,7 +29,7 @@ data class CirclePageResponse(
         @Schema(description = "총 조회 수", example = "150")
         val totalView: Int,
         @Schema(description = "총 좋아요 수", example = "30")
-        val totalLike: Long,
+        val totalLike: Int,
         @Schema(description = "내가 좋아요를 눌렀는지 여부", example = "false")
         val likedByMe: Boolean? = false
 ) {

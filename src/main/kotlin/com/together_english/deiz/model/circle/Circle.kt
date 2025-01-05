@@ -20,7 +20,7 @@ class Circle(
         address: String? = null,
         capacity: Int,
         attendMode: AttendMode,
-        contactWay: ContactWay,
+        contactWay: String?,
         onlineUrl: String? = null,
 ): BaseTimeEntity(){
 
@@ -74,9 +74,8 @@ class Circle(
     @Column(length = 255)
     var onlineUrl:String? = onlineUrl
 
-    @Column(nullable = false, length = 32)
-    @Enumerated(value = EnumType.STRING)
-    var contactWay: ContactWay = contactWay
+    @Column(nullable = true, length = 32)
+    var contactWay = contactWay
         protected set
 
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "circle")

@@ -31,7 +31,7 @@ class CustomCircleRepositoryImpl(
                 path(Circle::city),
                 path(Circle::capacity),
                 path(Circle::totalView),
-                count(entity(FavoriteCircle::class, "totalFavorite").path(FavoriteCircle::circle)).`as`(expression("totalLike")),
+                path(Circle::totalLike),
                 caseWhen(
                     path(FavoriteCircle::member).path(Member::id).isNotNull()
                         .and(path(FavoriteCircle::member).path(Member::id).eq(request?.memberId))
