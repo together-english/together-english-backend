@@ -20,7 +20,7 @@ class Circle(
         address: String? = null,
         capacity: Int,
         attendMode: AttendMode,
-        contactWay: String?,
+        contactWay: ContactWay,
         onlineUrl: String? = null,
 ): BaseTimeEntity(){
 
@@ -74,8 +74,9 @@ class Circle(
     @Column(length = 255)
     var onlineUrl:String? = onlineUrl
 
-    @Column(nullable = true, length = 32)
-    var contactWay = contactWay
+    @Column(nullable = false, length = 32)
+    @Enumerated(value = EnumType.STRING)
+    var contactWay: ContactWay = contactWay
         protected set
 
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "circle")
@@ -119,13 +120,6 @@ class Circle(
         this.valid = false
     }
 
-    fun increaseLikeCount() {
-        this.totalLike += 1
-    }
-
-    fun decreaseLikeCount() {
-        this.totalLike -= 1
-    }
     fun isWrittenBy(member: Member): Boolean {
         return this.leader.id == member.id
     }

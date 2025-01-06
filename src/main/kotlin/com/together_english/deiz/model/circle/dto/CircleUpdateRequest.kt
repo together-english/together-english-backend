@@ -1,6 +1,7 @@
 package com.together_english.deiz.model.circle.dto
 
 import com.together_english.deiz.model.circle.AttendMode
+import com.together_english.deiz.model.circle.ContactWay
 import com.together_english.deiz.model.common.City
 import com.together_english.deiz.model.common.EnglishLevel
 import io.swagger.v3.oas.annotations.media.Schema
@@ -45,7 +46,7 @@ data class CircleUpdateRequest(
 
     @field:NotNull(message = "연락 방법은 필수 입력 사항입니다.")
     @Schema(description = "연락 방법", example = "KAKAO_OPEN_CHAT")
-    val contactWay: String?,
+    val contactWay: ContactWay,
 
     @Schema(description = "온라인 URL (선택 사항)", example = "https://example.com/online-meeting")
     val onlineUrl: String? = null,

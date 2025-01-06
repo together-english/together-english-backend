@@ -1,27 +1,20 @@
 package com.together_english.deiz.repository.custom
 
+import com.linecorp.kotlinjdsl.querymodel.jpql.path.Paths.path
 import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpqlExecutor
-import com.querydsl.core.types.dsl.Expressions
-import com.querydsl.jpa.impl.JPAQueryFactory
 import com.together_english.deiz.model.circle.Circle
 import com.together_english.deiz.model.circle.CircleMember
-import com.together_english.deiz.model.circle.QCircle.circle
-import com.together_english.deiz.model.circle.QCircleMember.circleMember
-import com.together_english.deiz.model.circle.QFavoriteCircle.favoriteCircle
+import com.together_english.deiz.model.circle.FavoriteCircle
 import com.together_english.deiz.model.circle.dto.CircleMemberDetailResponse
 import com.together_english.deiz.model.circle.dto.CircleMemberPageResponse
 import com.together_english.deiz.model.member.dto.MyJoinedCirclePageResponse
-import com.together_english.deiz.model.member.dto.QMyJoinedCirclePageResponse
 import com.together_english.deiz.model.member.entity.Member
-import com.together_english.deiz.model.member.entity.QMember
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import java.util.*
 
 class CustomCircleMemberRepositoryImpl(
     private val kotlinJdslJpqlExecutor: KotlinJdslJpqlExecutor,
-    private val queryFactory: JPAQueryFactory
 ) : CustomCircleMemberRepository {
 
     override fun findMemberByCircle(circleId: UUID, pageable: Pageable): Page<CircleMemberPageResponse?> {
@@ -70,45 +63,66 @@ class CustomCircleMemberRepositoryImpl(
     }
 
     override fun findCircleByMember(member: Member, pageable: Pageable): Page<MyJoinedCirclePageResponse?> {
-        val isLikedByMe =
-            Expressions.booleanTemplate("case when {0} is not null then true else false end", favoriteCircle)
-        val jpaQuery = queryFactory.select(
-            QMyJoinedCirclePageResponse(
-                circle.id.`as`("circleId"),
-                circleMember.id.`as`("circleMemberId"),
-                circle.thumbnailUrl,
-                circle.title,
-                circle.introduction,
-                QMember.member.profile.`as`("leaderProfile"),
-                QMember.member.nickname.`as`("leaderName"),
-                circle.englishLevel,
-                circle.city,
-                circle.capacity,
-                circle.totalView,
-                circle.totalLike,
-                isLikedByMe
-            )
-        ).from(circleMember)
-            .join(circle)
-            .on(circleMember.circle.id.eq(circle.id))
-            .join(QMember.member)
-            .on(circleMember.member.id.eq(member.id))
-            .leftJoin(favoriteCircle)
-            .on(
-                favoriteCircle.circle.id.eq(circle.id)
-                    .and(favoriteCircle.member.id.eq(member.id))
-            )
-            .where(
-                QMember.member.id.eq(member.id)
-                    .and(circleMember.status.eq(CircleMember.CircleMemberStatus.NORMAL))
-                    .and(circle.valid)
-                    .and(QMember.member.valid)
-            )
+        val leaderPath = path(Circle::leader)
+        val favoriteMemberPath = path(FavoriteCircle::member)
+        val favoriteCirclePath = path(FavoriteCircle::circle)
 
-        val results = jpaQuery.offset(pageable.offset)
-            .limit(pageable.pageSize.toLong())
-            .fetch()
-
-        return PageImpl(results, pageable, jpaQuery.fetchCount())
+        val result =
+            kotlinJdslJpqlExecutor.findPage(pageable) {
+                selectNew<MyJoinedCirclePageResponse>(
+                    path(Circle::id).`as`(expression("circleId")),
+                    path(CircleMember::id).`as`(expression("circleMemberId")),
+                    path(Circle::thumbnailUrl),
+                    path(Circle::title),
+                    path(Circle::introduction),
+                    leaderPath.path(Member::profile).`as`(expression("leaderProfile")),
+                    leaderPath.path(Member::nickname).`as`(expression("leaderName")),
+                    path(Circle::englishLevel),
+                    path(Circle::city),
+                    path(Circle::capacity),
+                    path(Circle::totalView),
+                    count(entity(FavoriteCircle::class, "totalFavorite")).`as`(expression("totalLike")),
+                    caseWhen(
+                        favoriteMemberPath.path(Member::id).isNotNull()
+                            .and(favoriteMemberPath.path(Member::id).eq(member.id))
+                    )
+                        .then(true)
+                        .`else`(false)
+                        .`as`(expression("likedByMe"))
+                ).from(
+                    entity(CircleMember::class),
+                    join(CircleMember::circle),
+                    join(CircleMember::member),
+                    leftJoin(Circle::favoriteCircle)
+                        .on(
+                            favoriteCirclePath.path(Circle::id).eq(path(Circle::id))
+                                .and(favoriteMemberPath.path(Member::id).eq(path(Member::id)))
+                        ),
+                    leftJoin(Circle::favoriteCircle)
+                        .on(
+                            path(Circle::id).eq(path(Circle::id))
+                        ).`as`(entity(FavoriteCircle::class, "totalFavorite"))
+                ).whereAnd(
+                    path(Member::id).eq(member.id),
+                    path(Circle::valid).eq(true),
+                    path(Member::valid).eq(true)
+                ).groupBy(
+                        path(Circle::id),
+                        path(CircleMember::id),
+                        path(Circle::thumbnailUrl),
+                        path(Circle::title),
+                        path(Circle::introduction),
+                        leaderPath.path(Member::profile),
+                        leaderPath.path(Member::nickname),
+                        path(Circle::englishLevel),
+                        path(Circle::city),
+                        path(Circle::capacity),
+                        path(Circle::totalView),
+                        path(FavoriteCircle::member).path(Member::id),
+                    ).orderBy(
+                    path(Circle::updatedAt).desc()
+                )
+            }
+        return result
     }
-}
+    }

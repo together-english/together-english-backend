@@ -94,7 +94,7 @@ class CircleServiceTest() {
             address = "123 Sample Street",
             capacity = 20,
             attendMode = AttendMode.OFFLINE,
-            contactWay ="test@email.com",
+            contactWay = ContactWay.EMAIL,
             onlineUrl = "http://example.com/meeting"
         )
         savedCircle = circleRepository.save(circle)
@@ -128,7 +128,7 @@ class CircleServiceTest() {
             address = "123 Sample Street",
             capacity = 20,
             attendMode = AttendMode.OFFLINE,
-            contactWay = "test@email.com",
+            contactWay = ContactWay.EMAIL,
             onlineUrl = "http://example.com/meeting"
         )
         val favoriteCircle : FavoriteCircle = FavoriteCircle(
@@ -171,7 +171,7 @@ class CircleServiceTest() {
             introduction = "This is a test circle",
             capacity = 20,
             attendMode = AttendMode.OFFLINE,
-            contactWay = "test@email.com"
+            contactWay = ContactWay.EMAIL
         )
 
         val schedule1 = CircleSchedule(

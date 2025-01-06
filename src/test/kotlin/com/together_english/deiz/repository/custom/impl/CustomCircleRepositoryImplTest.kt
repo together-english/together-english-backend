@@ -2,6 +2,7 @@ package com.together_english.deiz.repository.custom.impl
 
 import com.together_english.deiz.model.circle.AttendMode
 import com.together_english.deiz.model.circle.Circle
+import com.together_english.deiz.model.circle.ContactWay
 import com.together_english.deiz.model.common.City
 import com.together_english.deiz.model.common.EnglishLevel
 import com.together_english.deiz.model.member.Gender
@@ -65,7 +66,7 @@ class CustomCircleRepositoryImplTest {
                 address = "123 Sample Street",
                 capacity = 20,
                 attendMode = AttendMode.OFFLINE,
-                contactWay = "email",
+                contactWay = ContactWay.EMAIL,
                 onlineUrl = "http://example.com/meeting"
         )
         circleRepository.save(circle)

@@ -7,7 +7,6 @@ plugins {
 	kotlin("jvm") version "1.9.24"
 	kotlin("plugin.spring") version "1.9.24"
 	kotlin("plugin.jpa") version "1.9.24"
-	kotlin("kapt") version "1.9.21"
 }
 
 group = "com.together-english"
@@ -26,8 +25,6 @@ repositories {
 
 extra["snippetsDir"] = file("build/generated-snippets")
 val jdslVersion = "3.5.2"
-
-val queryDslVersion: String by extra
 
 dependencies {
 	implementation("com.linecorp.kotlin-jdsl:jpql-dsl:$jdslVersion")
@@ -48,13 +45,6 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.6.0")
 	implementation("com.mailjet:mailjet-client:5.2.5")
-
-	implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
-
-	kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
-	kapt("jakarta.annotation:jakarta.annotation-api")
-	kapt("jakarta.persistence:jakarta.persistence-api")
-
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.5")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.5")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -64,33 +54,6 @@ dependencies {
 	testImplementation("org.mockito:mockito-core:5.2.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
-
-// Querydsl 설정부 추가 - start
-val generated = file("src/main/generated")
-
-// querydsl QClass 파일 생성 위치를 지정
-tasks.withType<JavaCompile> {
-	options.generatedSourceOutputDirectory.set(generated)
-}
-
-// kotlin source set 에 querydsl QClass 위치 추가
-sourceSets {
-	main {
-		kotlin.srcDirs += generated
-	}
-}
-
-// gradle clean 시에 QClass 디렉토리 삭제
-tasks.named("clean") {
-	doLast {
-		generated.deleteRecursively()
-	}
-}
-
-kapt {
-	generateStubs = true
-}
-
 
 
 allOpen {

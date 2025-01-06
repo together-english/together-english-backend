@@ -9,7 +9,6 @@ import com.together_english.deiz.model.circle.FavoriteCircle
 import com.together_english.deiz.model.circle.dto.*
 import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.repository.*
-import com.together_english.deiz.repository.custom.CircleQueryDslRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -20,7 +19,6 @@ import java.util.*
 @Service
 class CircleService(
     private val circleRepository: CircleRepository,
-    private val circleQueryDslRepository: CircleQueryDslRepository,
     private val circleJoinRepository: CircleJoinRepository,
     private val circleMemberRepository: CircleMemberRepository,
     private val s3ImageUploadService: S3ImageUploadService,
@@ -88,8 +86,6 @@ class CircleService(
             throw AlreadyExistException("모임 좋아요 기록(circle id: ${existFavoriteCircle.circle.id})")
         }
 
-        circle.increaseLikeCount()
-
         val favoriteCircle = FavoriteCircle(circle, member)
         favoriteCircleRepository.save(favoriteCircle)
     }
@@ -100,7 +96,6 @@ class CircleService(
         val favoriteCircle = favoriteCircleRepository.findByCircleAndMember(circle, member)
             ?: throw NotExistException("모임 좋아요 기록(circle id: ${id})")
 
-        circle.decreaseLikeCount()
         favoriteCircleRepository.delete(favoriteCircle)
     }
 
@@ -276,15 +271,16 @@ class CircleService(
         }
 
         circleMember.updateStatus(CircleMember.CircleMemberStatus.BANNED)
+        //circleMemberRepository.deleteById(circleMemberId)
     }
 
     fun findCirclesByPagination(pageable: Pageable, request: CircleSearchRequest?)
-            : Page<CirclePageResponse> {
-        return if (request?.memberId != null) {
-            circleQueryDslRepository.searchPageForMember(request = request, pageable = pageable)
-        } else {
-            circleQueryDslRepository.searchPageForAnonymous(request = request, pageable = pageable)
+            : Page<CirclePageResponse?> {
+        // 회원/비회원 이용자에 따라 좋아요 필드 조회 여부, 이용자가 좋아요한 모임만 조회 여부 Repository 에서 구현
+        if (request?.likeByMeOnly == true && request.memberId == null) {
+            throw RuntimeException("회원 ID가 존재하지 않습니다.(내가 좋아요한 모임 조회)")
         }
+        return circleRepository.findCirclesByPagination(pageable, request)
     }
 
 }

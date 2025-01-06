@@ -1,13 +1,12 @@
 package com.together_english.deiz.model.member.dto
 
-import com.querydsl.core.annotations.QueryProjection
 import com.together_english.deiz.model.common.City
 import com.together_english.deiz.model.common.EnglishLevel
 import io.swagger.v3.oas.annotations.media.Schema
 import java.util.*
 
 @Schema(description = "내가 가입한 모임 리스트 조회 응답")
-data class MyJoinedCirclePageResponse @QueryProjection constructor(
+data class MyJoinedCirclePageResponse(
     @Schema(description = "서클 ID", example = "FWEHFEWD32532332")
     val circleId: UUID,
     @Schema(description = "서클멤버 ID", example = "FWEHFEWD32532332")
@@ -31,7 +30,7 @@ data class MyJoinedCirclePageResponse @QueryProjection constructor(
     @Schema(description = "총 조회 수", example = "150")
     val totalView: Int,
     @Schema(description = "총 좋아요 수", example = "30")
-    val totalLike: Int,
+    val totalLike: Long,
     @Schema(description = "내가 좋아요를 눌렀는지 여부", example = "false")
     val likedByMe: Boolean? = false
 ) {

@@ -67,7 +67,9 @@ class CircleController(
             size = 9, page = 0, sort = ["createdAt"], direction = Sort.Direction.DESC
         ) pageable: Pageable,
         @Valid @RequestBody request: CircleSearchRequest,
-    ): ResponseEntity<MainResponse<Page<CirclePageResponse>>> {
+    ): ResponseEntity<MainResponse<Page<CirclePageResponse?>>> {
+        val request =
+            CircleSearchRequest(request.memberId, request.title, request.city, request.level, request.likeByMeOnly)
         val circlesPage = circleService.findCirclesByPagination(pageable, request)
         return ResponseEntity.ok(MainResponse.getSuccessResponse(circlesPage))
     }
