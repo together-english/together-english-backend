@@ -9,6 +9,9 @@ import com.together_english.deiz.model.circle.QFavoriteCircle.favoriteCircle
 import com.together_english.deiz.model.circle.dto.CirclePageResponse
 import com.together_english.deiz.model.circle.dto.CircleSearchRequest
 import com.together_english.deiz.model.circle.dto.QCirclePageResponse
+import com.together_english.deiz.model.member.dto.MyCreatedCirclePageResponse
+import com.together_english.deiz.model.member.dto.QMyCreatedCirclePageResponse
+import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.model.member.entity.QMember.member
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -50,7 +53,8 @@ class CircleQueryDslRepository(
 
     fun searchPageForMember(pageable: Pageable, request: CircleSearchRequest?): Page<CirclePageResponse> {
         val builder = createDynamicCondition(request)
-        val isLikedByMe = Expressions.booleanTemplate("case when {0} is not null then true else false end", favoriteCircle)
+        val isLikedByMe =
+            Expressions.booleanTemplate("case when {0} is not null then true else false end", favoriteCircle)
         val jpaQuery = queryFactory.select(
             QCirclePageResponse(
                 circle.id,
@@ -69,8 +73,10 @@ class CircleQueryDslRepository(
         ).from(circle)
             .innerJoin(member).on(circle.leader.eq(member))
             .leftJoin(favoriteCircle)
-            .on(favoriteCircle.circle.id.eq(circle.id)
-                .and(favoriteCircle.member.id.eq(request!!.memberId)))
+            .on(
+                favoriteCircle.circle.id.eq(circle.id)
+                    .and(favoriteCircle.member.id.eq(request!!.memberId))
+            )
             .where(builder)
             .orderBy(circle.createdAt.desc())
 
@@ -81,7 +87,46 @@ class CircleQueryDslRepository(
         return PageImpl(results, pageable, jpaQuery.fetchCount());
     }
 
-    private fun createDynamicCondition(request: CircleSearchRequest?) : BooleanBuilder {
+    fun findCreatedCirclesByPagination(member: Member, pageable: Pageable): Page<MyCreatedCirclePageResponse?> {
+        val isLikedByMe =
+            Expressions.booleanTemplate("case when {0} is not null then true else false end", favoriteCircle)
+        val jpaQuery = queryFactory.select(
+            QMyCreatedCirclePageResponse(
+                circle.id,
+                circle.thumbnailUrl,
+                circle.title,
+                circle.introduction,
+                circle.leader.profile.`as`("leaderProfile"),
+                circle.leader.nickname.`as`("leaderName"),
+                circle.englishLevel,
+                circle.city,
+                circle.capacity,
+                circle.totalView,
+                circle.totalLike,
+                isLikedByMe
+            )
+        ).from(circle)
+            .join(circle.leader)
+            .on(circle.leader.id.eq(member.id))
+            .leftJoin(favoriteCircle)
+            .on(
+                favoriteCircle.circle.id.eq(circle.id)
+                    .and(favoriteCircle.member.id.eq(member.id))
+            )
+            .where(
+                circle.valid
+                    .and(circle.leader.valid)
+            )
+            .orderBy(circle.createdAt.desc())
+
+        val results = jpaQuery.offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
+            .fetch()
+
+        return PageImpl(results, pageable, jpaQuery.fetchCount())
+    }
+
+    private fun createDynamicCondition(request: CircleSearchRequest?): BooleanBuilder {
         val builder = BooleanBuilder()
 
         request?.title?.let {
