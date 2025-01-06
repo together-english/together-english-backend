@@ -119,6 +119,13 @@ class Circle(
         this.valid = false
     }
 
+    fun increaseLikeCount() {
+        this.totalLike += 1
+    }
+
+    fun decreaseLikeCount() {
+        this.totalLike -= 1
+    }
     fun isWrittenBy(member: Member): Boolean {
         return this.leader.id == member.id
     }

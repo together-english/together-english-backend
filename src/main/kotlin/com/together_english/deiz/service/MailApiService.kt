@@ -41,12 +41,11 @@ class MailApiService(
                                             .put("Name", userName)
                                     )
                             )
+                            .put("TemplateID", 6610602)
+                            .put("TemplateLanguage", true)
                             .put(Emailv31.Message.SUBJECT, "[together-english] 비밀번호 재설정 메일입니다.")
-                            .put(Emailv31.Message.TEXTPART, "TEXTPART 위치요!")
-                            .put(
-                                Emailv31.Message.HTMLPART,
-                                "<h3>안녕하세요 비밀번호 재설정 메일입니다.<br />" +
-                                        "<a href=\"$sendURL\">비밀번호 재설정 하기</a></h3>"
+                            .put(Emailv31.Message.VARS, JSONObject()
+                                        .put("reset_url", sendURL)
                             )
                     )
             )
