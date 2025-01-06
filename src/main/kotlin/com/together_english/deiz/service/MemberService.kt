@@ -8,8 +8,8 @@ import com.together_english.deiz.model.member.dto.MyPageResponse
 import com.together_english.deiz.model.member.dto.MyPageUpdateRequest
 import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.repository.CircleMemberRepository
-import com.together_english.deiz.repository.CircleRepository
 import com.together_english.deiz.repository.MemberRepository
+import com.together_english.deiz.repository.custom.CircleQueryDslRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -23,7 +23,7 @@ class MemberService(
     private val s3ImageUploadService: S3ImageUploadService,
     private val passwordEncoder: PasswordEncoder,
     private val circleMemberRepository: CircleMemberRepository,
-    private val circleRepository: CircleRepository,
+    private val circleQueryDslRepository: CircleQueryDslRepository
 ) {
 
     @Transactional
@@ -62,7 +62,7 @@ class MemberService(
     }
 
     fun getMyCreatedCircleList(member: Member, pageable: Pageable): Page<MyCreatedCirclePageResponse?> {
-        val myCreatedCircleList = circleRepository.findCreatedCirclesByPagination(member, pageable)
+        val myCreatedCircleList = circleQueryDslRepository.findCreatedCirclesByPagination(member, pageable)
         return myCreatedCircleList
     }
 

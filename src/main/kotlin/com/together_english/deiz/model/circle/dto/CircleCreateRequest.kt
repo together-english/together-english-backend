@@ -2,7 +2,6 @@ package com.together_english.deiz.model.circle.dto
 
 import com.together_english.deiz.model.circle.AttendMode
 import com.together_english.deiz.model.circle.Circle
-import com.together_english.deiz.model.circle.ContactWay
 import com.together_english.deiz.model.common.City
 import com.together_english.deiz.model.common.EnglishLevel
 import com.together_english.deiz.model.member.entity.Member
@@ -10,7 +9,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
-import org.springframework.web.multipart.MultipartFile
 
 @Schema(description = "Request DTO for creating a new Circle")
 data class CircleCreateRequest (
@@ -45,7 +43,7 @@ data class CircleCreateRequest (
 
         @field:NotNull(message = "연락 방법은 필수 입력 사항입니다.")
         @Schema(description = "연락 방법", example = "KAKAO_OPEN_CHAT")
-        val contactWay: ContactWay,
+        val contactWay: String,
 
         @field:NotNull(message = "스케줄은 최소 하나 이상 입력해야 합니다.")
         @field:Size(min = 1, message = "스케줄은 최소 하나 이상 입력해야 합니다.")

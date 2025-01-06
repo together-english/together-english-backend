@@ -1,5 +1,6 @@
 package com.together_english.deiz.model.circle.dto
 
+import com.querydsl.core.annotations.QueryProjection
 import com.together_english.deiz.model.common.City
 import com.together_english.deiz.model.common.EnglishLevel
 import com.together_english.deiz.model.member.entity.Member
