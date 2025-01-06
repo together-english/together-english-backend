@@ -88,6 +88,8 @@ class CircleService(
             throw AlreadyExistException("모임 좋아요 기록(circle id: ${existFavoriteCircle.circle.id})")
         }
 
+        circle.increaseLikeCount()
+
         val favoriteCircle = FavoriteCircle(circle, member)
         favoriteCircleRepository.save(favoriteCircle)
     }
@@ -98,6 +100,7 @@ class CircleService(
         val favoriteCircle = favoriteCircleRepository.findByCircleAndMember(circle, member)
             ?: throw NotExistException("모임 좋아요 기록(circle id: ${id})")
 
+        circle.decreaseLikeCount()
         favoriteCircleRepository.delete(favoriteCircle)
     }
 
