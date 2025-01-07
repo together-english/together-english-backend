@@ -91,7 +91,7 @@ class CommentServiceTest {
             address = "123 Sample Street",
             capacity = 20,
             attendMode = AttendMode.OFFLINE,
-            contactWay = ContactWay.EMAIL,
+            contactWay = "test@email.com",
             onlineUrl = "http://example.com/meeting"
         )
         savedCircle = circleRepository.save(circle)
