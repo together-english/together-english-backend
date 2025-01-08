@@ -21,6 +21,16 @@ class JwtAuthenticationFilter(
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         val authHeader = request.getHeader("Authorization")
+        val cookies = request.cookies
+
+        if(cookies.isNotEmpty()) {
+            for(cookie in cookies) {
+                if(cookie.name.equals("refresh_token")) {
+                    var refresh_token = cookie.value
+                    println(refresh_token)
+                }
+            }
+        }
 
         if (authHeader != null && authHeader.startsWith("Bearer")) {
             try {

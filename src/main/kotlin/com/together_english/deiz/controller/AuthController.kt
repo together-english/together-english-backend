@@ -12,10 +12,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.servlet.http.Cookie
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.http.HttpHeaders
+
 
 @RestController
 @RequestMapping("/auth")
@@ -45,7 +48,22 @@ class AuthController(
     @PostMapping("/login")
     fun signIn(@Valid @RequestBody signInRequest: SignInRequest): ResponseEntity<MainResponse<SignInResponse>> {
         val signInResponse = authService.signIn(signInRequest)
-        return ResponseEntity.ok(getSuccessResponse(signInResponse))
+
+        val refreshTokenCookie = Cookie("refresh_token", signInResponse.jwtToken.refreshToken)
+        refreshTokenCookie.isHttpOnly = true
+        refreshTokenCookie.path = "/"
+        refreshTokenCookie.maxAge = 60 * 60 * 24 * 1
+
+        val headers = HttpHeaders()
+        val cookieString = StringBuilder()
+            .append("refresh_token=${refreshTokenCookie.value}")
+            .append("; HttpOnly")
+            .append("; Path=${refreshTokenCookie.path}")
+            .append("; Max-Age=${refreshTokenCookie.maxAge}")
+            .toString()
+        headers.add(HttpHeaders.SET_COOKIE, cookieString)
+
+        return ResponseEntity.ok().headers(headers).body(getSuccessResponse(signInResponse))
     }
 
     @Operation(

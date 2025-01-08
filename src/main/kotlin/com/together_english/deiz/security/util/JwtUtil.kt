@@ -1,5 +1,6 @@
 package com.together_english.deiz.security.util
 
+import com.together_english.deiz.exception.NotExistException
 import com.together_english.deiz.model.common.JwtToken
 import com.together_english.deiz.repository.MemberRepository
 import io.jsonwebtoken.Jwts
@@ -12,55 +13,57 @@ import java.util.*
 
 @Component
 class JwtUtil(
-        @Value("\${jwt.secret}") private val secret: String,
-        @Value("\${jwt.accessExpiration}") val accessExpiration: Long,
-        @Value("\${jwt.refreshExpiration}") val refreshExpiration: Long,
-        private val memberRepository: MemberRepository
+    @Value("\${jwt.secret}") private val secret: String,
+    @Value("\${jwt.accessExpiration}") val accessExpiration: Long,
+    @Value("\${jwt.refreshExpiration}") val refreshExpiration: Long,
+    private val memberRepository: MemberRepository
 ) {
 
     private val LOGGER = LoggerFactory.getLogger(JwtUtil::class.java)
 
     fun generateAllToken(email: String): JwtToken {
         return JwtToken(
-                accessToken = generateAccessToken(email),
-                refreshToken = generateRefreshToken(email)
+            accessToken = generateAccessToken(email),
+            refreshToken = generateRefreshToken(email)
         )
     }
 
     fun generateAccessToken(email: String): String {
         LOGGER.info("access token 생성 시작")
         return Jwts.builder()
-                .header().add("typ", "access").and()
-                .claims().add("email", email).and()
-                .issuedAt(Date())
-                .expiration(Date(System.currentTimeMillis() + accessExpiration * 1000))
-                .signWith(Keys.hmacShaKeyFor(secret.toByteArray()))
-                .compact()
+            .header().add("typ", "access").and()
+            .claims().add("email", email).and()
+            .issuedAt(Date())
+            .expiration(Date(System.currentTimeMillis() + accessExpiration * 1000))
+            .signWith(Keys.hmacShaKeyFor(secret.toByteArray()))
+            .compact()
 
     }
 
     fun generateRefreshToken(email: String): String {
         LOGGER.info("refresh token 생성 시작")
         return Jwts.builder()
-                .header().add("typ", "refresh").and()
-                .claims().add("email", email).and()
-                .issuedAt(Date())
-                .expiration(Date(System.currentTimeMillis() + refreshExpiration * 1000))
-                .signWith(Keys.hmacShaKeyFor(secret.toByteArray()))
-                .compact()
+            .header().add("typ", "refresh").and()
+            .claims().add("email", email).and()
+            .issuedAt(Date())
+            .expiration(Date(System.currentTimeMillis() + refreshExpiration * 1000))
+            .signWith(Keys.hmacShaKeyFor(secret.toByteArray()))
+            .compact()
     }
 
     fun validateToken(token: String): Boolean {
+        validateRefreshToken(token)
+//        validateAccessToken(token)
         LOGGER.info("토큰 검증 시작")
         val claimsJws = Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(secret.toByteArray()))
-                .build()
-                .parseSignedClaims(token)
+            .verifyWith(Keys.hmacShaKeyFor(secret.toByteArray()))
+            .build()
+            .parseSignedClaims(token)
 
         val email = claimsJws.payload["email"] as String
 
         memberRepository.findByEmail(email).orElseThrow {
-            UsernameNotFoundException(email+"해당 유저가 존재하지 않습니다.")
+            UsernameNotFoundException(email + "해당 유저가 존재하지 않습니다.")
         }
 
         return !claimsJws.payload.expiration.before(Date())
@@ -69,11 +72,28 @@ class JwtUtil(
     fun verifyAndextractUsername(token: String): String {
         LOGGER.info("get authentication 시작")
         val claimsJws = Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(secret.toByteArray()))
-                .build()
-                .parseSignedClaims(token)
+            .verifyWith(Keys.hmacShaKeyFor(secret.toByteArray()))
+            .build()
+            .parseSignedClaims(token)
 
         return claimsJws.payload["email"] as String
     }
 
+    fun validateRefreshToken(token: String): String? {
+        LOGGER.info("Refresh 토큰 검증 시작")
+        val claimsJws = Jwts.parser()
+            .verifyWith(Keys.hmacShaKeyFor(secret.toByteArray()))
+            .build()
+            .parseSignedClaims(token)
+
+        return if (claimsJws.payload.expiration.before(Date())) {
+            generateAccessToken(claimsJws.payload["email"] as String)
+        } else {
+            null
+        }
+    }
+
+//    fun validateAccessToken(token: String): String {
+//
+//    }
 }
