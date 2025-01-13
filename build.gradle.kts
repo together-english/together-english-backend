@@ -51,6 +51,13 @@ dependencies {
 
 	implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
 
+	//websocket
+	implementation("org.springframework.boot:spring-boot-starter-websocket")
+	//redis
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	//mongodb
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+
 	kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
 	kapt("jakarta.annotation:jakarta.annotation-api")
 	kapt("jakarta.persistence:jakarta.persistence-api")

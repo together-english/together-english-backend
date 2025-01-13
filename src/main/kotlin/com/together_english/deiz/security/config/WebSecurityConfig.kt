@@ -48,6 +48,10 @@ class WebSecurityConfig(
                 authorize("/swagger-ui/**", permitAll)
                 authorize("api-docs/**", permitAll)
                 authorize("/v3/api-docs/**", permitAll)
+
+                authorize("/ws-stomp/**", permitAll)
+                authorize("/pub/**", permitAll)
+                authorize("/sub/**", permitAll)
             }
             csrf { disable() }
             sessionManagement {
