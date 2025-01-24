@@ -21,7 +21,7 @@ class RedisSubscriber(
         try {
             val chatMessage = objectMapper.readValue(publishMessage, MessageSubDto::class.java).chatMessageDto
 
-            logger.info("Redis Subscriber chatMSG: {}", chatMessage?.message)
+            logger.info("Redis Subscriber sendMessage - chatMSG: {}", chatMessage?.message)
 
             // 채팅방을 구독한 클라이언트에게 메시지 발송
             // TODO chatMessage 존재할때만 변환 후 메시지 전송하도록 변경함. 정상동작 확인하기
@@ -38,15 +38,17 @@ class RedisSubscriber(
             val chatRoomListGetResponseList = messageSubDto.list
             val chatRoomListGetResponseListPartner = messageSubDto.partnerList
 
-            val userId = messageSubDto.userId
-            val partnerId = messageSubDto.partnerId
+            val senderId = messageSubDto.senderId
+            val receiverId = messageSubDto.receiverId
+
+            logger.info("Redis Subscriber sendRoomList")
 
             // 로그인 유저 채팅방 리스트 최신화
-            chatRoomListGetResponseList?.let { messagingTemplate.convertAndSend("/sub/chat/roomlist/$userId", it) }
+            chatRoomListGetResponseList?.let { messagingTemplate.convertAndSend("/sub/chat/roomlist/$senderId", it) }
 
             // 상대방 유저 채팅방 리스트 최신화
             chatRoomListGetResponseListPartner?.let {
-                messagingTemplate.convertAndSend("/sub/chat/roomlist/$partnerId",
+                messagingTemplate.convertAndSend("/sub/chat/roomlist/$receiverId",
                     it
                 )
             }

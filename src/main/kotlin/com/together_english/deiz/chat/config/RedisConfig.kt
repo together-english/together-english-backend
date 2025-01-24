@@ -78,6 +78,9 @@ public class RedisConfig(
         redisTemplate.keySerializer = StringRedisSerializer()
         redisTemplate.valueSerializer = Jackson2JsonRedisSerializer(Any::class.java)
 
+        redisTemplate.hashKeySerializer = StringRedisSerializer()
+        redisTemplate.hashValueSerializer = Jackson2JsonRedisSerializer(Any::class.java)
+
         return redisTemplate
     }
 }

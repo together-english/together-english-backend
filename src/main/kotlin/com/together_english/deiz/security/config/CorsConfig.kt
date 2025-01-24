@@ -29,6 +29,7 @@ class CorsConfig(
                 "https://www.together-english.com",
                 "http://localhost:80",
                 "http://localhost:80/swagger-ui.html",
+                "http://localhost:4040",
                 devDomainUrl,
                 "${devDomainUrl}/swagger-ui.html"
             )
