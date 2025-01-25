@@ -24,7 +24,6 @@ class RedisSubscriber(
             logger.info("Redis Subscriber sendMessage - chatMSG: {}", chatMessage?.message)
 
             // 채팅방을 구독한 클라이언트에게 메시지 발송
-            // TODO chatMessage 존재할때만 변환 후 메시지 전송하도록 변경함. 정상동작 확인하기
             chatMessage?.let { messagingTemplate.convertAndSend("/sub/chat/room/${chatMessage?.roomId}", it) }
 
         } catch (e: Exception) {
@@ -41,16 +40,16 @@ class RedisSubscriber(
             val senderId = messageSubDto.senderId
             val receiverId = messageSubDto.receiverId
 
-            logger.info("Redis Subscriber sendRoomList")
-
             // 로그인 유저 채팅방 리스트 최신화
-            chatRoomListGetResponseList?.let { messagingTemplate.convertAndSend("/sub/chat/roomlist/$senderId", it) }
+            chatRoomListGetResponseList?.let {
+                messagingTemplate.convertAndSend("/sub/chat/roomlist/$senderId", it)
+                logger.info("Redis Subscriber sendRoomList : senderId={}", senderId)
+            }
 
             // 상대방 유저 채팅방 리스트 최신화
             chatRoomListGetResponseListPartner?.let {
-                messagingTemplate.convertAndSend("/sub/chat/roomlist/$receiverId",
-                    it
-                )
+                messagingTemplate.convertAndSend("/sub/chat/roomlist/$receiverId",it)
+                logger.info("Redis Subscriber sendRoomList : receiverId={}", receiverId)
             }
         } catch (e: Exception) {
             logger.error("sendRoomList: Exception {}", e)

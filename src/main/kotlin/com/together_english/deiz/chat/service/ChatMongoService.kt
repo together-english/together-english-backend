@@ -28,6 +28,8 @@ class ChatMongoService(
         )
 
         val isChatRoomExist = userChatRoomsRepository.existsByRoomId(requestMessage.roomId)
+
+        // 채팅방 리스트 정보 저장
         if(isChatRoomExist) {
             val existingRoom = userChatRoomsRepository.findByRoomId(requestMessage.roomId)
                                 .orElseThrow { NoSuchElementException("chat room id : ${requestMessage.roomId} not found") }
@@ -37,7 +39,6 @@ class ChatMongoService(
 
             userChatRoomsRepository.save(existingRoom)
         } else if(!isChatRoomExist){
-            // 채팅방 리스트 정보 저장
             userChatRoomsRepository.save(userChatRoomInfo)
         }
 

@@ -18,7 +18,17 @@ class ChatService(
     fun sendChatMessage(chatMessage: ChatMessageDto, accessToken: String) {
         //TODO 0.토큰을 통해 사용자 검증
 
+        //TODO : 마지막 메시지를 레디스에 해시 자료구조에 저장이 필요할까? -> Pub/Sub 통신으로 실시간 처리가 될건데..
         chatRoomRedisRepository.setLastChatMessage(chatMessage.roomId, chatMessage)
+
+        val chatRoomListGetResponse = chatMessage.toChatRoomListGetResponse(chatMessage)
+        val chatUserIds = listOf(chatMessage.senderId!!, chatMessage.receiverId!!)
+
+        // 발신,수신자 채팅방 목록 정보 최신화
+        for (userId in chatUserIds) {
+            chatRoomRedisRepository.setChatRoomList(userId, chatMessage.roomId)
+            chatRoomRedisRepository.setChatRoomListDetail(userId, chatMessage.roomId, chatRoomListGetResponse)
+        }
 
         var senderId = chatMessage.senderId!!
         var partnerId: Long
@@ -27,7 +37,7 @@ class ChatService(
         /* 채팅방의 마지막 메시지 조회 */
         val newChatRoom: ChatRoomListGetResponse
         if(chatRoomRedisRepository.existChatRoom(senderId, chatMessage.roomId)) {
-            newChatRoom = chatRoomRedisRepository.getChatRoom(senderId, chatMessage.roomId)
+            newChatRoom = chatRoomRedisRepository.getChatRoom(chatMessage.roomId)
         } else {
             newChatRoom =
                 chatRoomService.getChatRoomInfo(accessToken, chatMessage.roomId)

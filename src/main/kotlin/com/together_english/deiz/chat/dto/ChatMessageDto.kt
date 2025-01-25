@@ -22,9 +22,23 @@ data class ChatMessageDto(
             type = this.type,
             roomId = this.roomId,
             senderId = this.senderId,
+            senderName = this.senderName,
+            receiverId = this.receiverId,
+            receiverName = this.receiverName,
             message = this.message,
             time = this.time,
             userCount = this.userCount,
+        )
+    }
+
+    fun toChatRoomListGetResponse(chatMessage: ChatMessageDto): ChatRoomListGetResponse {
+        return ChatRoomListGetResponse(
+            roomId = chatMessage.roomId,
+            senderId = chatMessage.senderId,
+            senderName = chatMessage.senderName,
+            receiverId = chatMessage.receiverId,
+            receiverName = chatMessage.receiverName,
+            lastMessage = chatMessage.message
         )
     }
 }

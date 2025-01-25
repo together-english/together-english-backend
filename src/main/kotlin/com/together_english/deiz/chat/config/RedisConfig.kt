@@ -32,39 +32,29 @@ public class RedisConfig(
         return lettuceFactory
     }
 
+    /* 채팅방 정보를 처리하는 subscriber 설정 추가 */
     @Bean
-    fun listenerAdapterChatMessage(
-        subscriber: RedisSubscriber
-    ): MessageListenerAdapter {
+    fun listenerAdapterChatMessage(subscriber: RedisSubscriber): MessageListenerAdapter {
         return MessageListenerAdapter(subscriber, "sendMessage")
+    }
+
+    /* 채팅방 목록 정보를 처리하는 subscriber 설정 추가 */
+    @Bean
+    fun listenerAdapterChatRoomList(subscriber: RedisSubscriber): MessageListenerAdapter {
+        return MessageListenerAdapter(subscriber, "sendRoomList")
     }
 
     /* redis 에 발행(pub)된 메시지 처리 시 리스너 */
     @Bean
     fun redisMessageListener(
         listenerAdapterChatMessage: MessageListenerAdapter,
+        listenerAdapterChatRoomList: MessageListenerAdapter,
         channelTopic: ChannelTopic
     ): RedisMessageListenerContainer {
 
         val container = RedisMessageListenerContainer()
         container.setConnectionFactory(redisConnectionFactory())
         container.addMessageListener(listenerAdapterChatMessage, channelTopic)
-        return container
-    }
-
-    /** 실제 메시지 방을 처리하는 subscriber 설정 추가 */
-    @Bean
-    fun listenerAdapterChatRoomList(subscriber: RedisSubscriber): MessageListenerAdapter {
-        return MessageListenerAdapter(subscriber, "sendRoomList")
-    }
-
-    @Bean
-    fun redisMessageListenerRoomList(
-        listenerAdapterChatRoomList: MessageListenerAdapter,
-        channelTopic: ChannelTopic
-    ): RedisMessageListenerContainer {
-        val container = RedisMessageListenerContainer()
-        container.setConnectionFactory(redisConnectionFactory())
         container.addMessageListener(listenerAdapterChatRoomList, channelTopic)
         return container
     }
@@ -72,7 +62,7 @@ public class RedisConfig(
     /* RedisPublisher 에서 사용되는 redisTemplate 설정 */
     @Bean
     fun redisTemplate(connectionFactory: RedisConnectionFactory)
-        : RedisTemplate<String, Any> {
+            : RedisTemplate<String, Any> {
         val redisTemplate = RedisTemplate<String, Any>()
         redisTemplate.connectionFactory = connectionFactory
         redisTemplate.keySerializer = StringRedisSerializer()
