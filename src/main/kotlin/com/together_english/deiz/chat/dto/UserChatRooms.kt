@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.util.*
+import java.time.format.DateTimeFormatter
 
 @Document(collection = "UserChatRooms")
 data class UserChatRooms(
@@ -19,5 +19,6 @@ data class UserChatRooms(
 //    var roomName: String,                           // 방 이름
     var userChatRoomsInfo: UserChatRoomsInfo,         // 채팅방에 참가한 사용자 정보
     var lastMessage: String? = null,                  // 마지막 메시지 정보
-    var time: Date? = Date.from(LocalDateTime.now().atZone(ZoneOffset.UTC).withZoneSameInstant(ZoneOffset.ofHours(9)).toInstant()), // 전송 시간
+    var time: String = LocalDateTime.now()             // 현재 시스템 시간
+        .format(DateTimeFormatter.ISO_DATE_TIME)       // ISO-8601 형식으로 변환, // 전송 시간
 )

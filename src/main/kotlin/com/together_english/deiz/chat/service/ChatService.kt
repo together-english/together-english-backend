@@ -32,11 +32,24 @@ class ChatService(
 
         var senderId = chatMessage.senderId!!
         var partnerId: Long
+
+        /* 채팅 상세정보 저장 */
+        chatRoomRedisRepository.setChatRoomDetail(chatMessage)
+
+
+        // TODO 테스트용 채팅방 목록 조회 - 추후에 조회 메소드에 옮기기
+        val chatRoomListWithDetail: List<ChatRoomListGetResponse> = getRedisChatRoomListWithDetail(senderId)
+        println(chatRoomListWithDetail.toString())
+
+        // TODO 테스트용 채팅방 상세메시지들 조회 - 추후에 조회 메소드로 옮기기
+        val chatRoomDetail = getRedisChatRoomDetail("1")
+        print(chatRoomDetail)
+
         //TODO 1.채팅방 삭제 시 DELETE 로직
 
         /* 채팅방의 마지막 메시지 조회 */
         val newChatRoom: ChatRoomListGetResponse
-        if(chatRoomRedisRepository.existChatRoom(senderId, chatMessage.roomId)) {
+        if (chatRoomRedisRepository.existChatRoom(senderId, chatMessage.roomId)) {
             newChatRoom = chatRoomRedisRepository.getChatRoom(chatMessage.roomId)
         } else {
             newChatRoom =
@@ -45,10 +58,14 @@ class ChatService(
 
         val message = MessageSubDto(
             senderId = senderId,
+            receiverId = chatMessage.receiverId,
             chatMessageDto = ChatMessageDto(
                 type = chatMessage.type,
                 roomId = chatMessage.roomId,
                 senderId = chatMessage.senderId,
+                senderName = chatMessage.senderName,
+                receiverId = chatMessage.receiverId,
+                receiverName = chatMessage.receiverName,
                 message = chatMessage.message,
                 time = chatMessage.time,
                 userCount = chatMessage.userCount,
@@ -56,5 +73,20 @@ class ChatService(
         )
 
         redisPublisher.publish(message)
+    }
+
+    /* 사용자의 채팅 목록, 마지막 메시지를 조회 */
+    fun getRedisChatRoomListWithDetail(senderId: Long): List<ChatRoomListGetResponse> {
+        // 테스트용 - Redis 저장소에서 최신화된 채팅방 목록 정보 조회
+        val roomIds = chatRoomRedisRepository.getChatRoomList(senderId)
+
+        // Redis 저장소에 저장된 채팅방 마지막 메시지 정보 조회
+        return chatRoomRedisRepository.getChatRoomListDetail(senderId, roomIds!!)
+    }
+
+    /* 사용자의 채팅상세정보 조회 */
+    fun getRedisChatRoomDetail(roomId: String): List<ChatMessageDto> {
+        val chatMessage = chatRoomRedisRepository.getChatRoomDetail(roomId)
+        return chatMessage
     }
 }

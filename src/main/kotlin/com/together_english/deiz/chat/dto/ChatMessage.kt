@@ -6,8 +6,7 @@ import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.util.*
+import java.time.format.DateTimeFormatter
 
 @Document(collection = "UserChats")
 data class ChatMessage(
@@ -22,7 +21,8 @@ data class ChatMessage(
     var receiverId: Long? = null,    // 수신자 ID
     var receiverName: String? = null,// 수신자명
     var message: String? = null,     // 메시지
-    var time: Date? = Date.from(LocalDateTime.now().atZone(ZoneOffset.UTC).withZoneSameInstant(ZoneOffset.ofHours(9)).toInstant()), // 전송 시간
+    var time: String = LocalDateTime.now()             // 현재 시스템 시간
+        .format(DateTimeFormatter.ISO_DATE_TIME),       // ISO-8601 형식으로 변환, // 전송 시간
     var userCount: Long = 0L,        // 채팅방 인원 수
 ) {
     fun toDTO(message: ChatMessage): ChatMessageDto {

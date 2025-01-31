@@ -7,6 +7,7 @@ import com.together_english.deiz.chat.dto.ChatRoomListGetResponse
 import jakarta.annotation.Resource
 import org.slf4j.LoggerFactory
 import org.springframework.data.redis.core.HashOperations
+import org.springframework.data.redis.core.ListOperations
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.core.SetOperations
 import org.springframework.stereotype.Repository
@@ -30,6 +31,7 @@ class ChatRoomRedisRepository(
     private lateinit var opsHashChatRoomList: SetOperations<String, String>
     private lateinit var opsHashChatRoomListInfo: HashOperations<String, String, ChatRoomListGetResponse>
     private lateinit var opsHashChatRoom: HashOperations<String, String, ChatMessageDto>
+    private lateinit var opsListChatRoomDetail: ListOperations<String, Object>
 
     // 채팅방 리스트 초기화
 //    fun initChatRoomList(userId: Long, list: List<ChatRoomListGetResponse>) {
@@ -55,11 +57,33 @@ class ChatRoomRedisRepository(
 //        )
 //    }
 
+    // TODO : getChatRoom 메소드 사용 로직위치 확인
     fun getChatRoom(roomId: String): ChatRoomListGetResponse {
         return objectMapper.convertValue(
             opsHashChatRoom.values(getChatRoomKey(roomId)),
             object : TypeReference<ChatRoomListGetResponse>() {}
         )
+    }
+
+    /* 채팅 상세정보 저장 */
+    fun setChatRoomDetail(chatMessage: ChatMessageDto) {
+        val chatRoomDetailKey = getChatRoomDetailKey(chatMessage.roomId!!)
+        opsListChatRoomDetail = redisTemplate.opsForList()
+        opsListChatRoomDetail.rightPush(chatRoomDetailKey, chatMessage as Object)
+    }
+
+    /* 채팅 상세정보 조회 */
+    fun getChatRoomDetail(roomId: String): List<ChatMessageDto> {
+        val chatRoomDetailKey = getChatRoomDetailKey(roomId)
+        opsListChatRoomDetail = redisTemplate.opsForList()
+        val redisChatRoomDetail = opsListChatRoomDetail.range(chatRoomDetailKey, 0, -1)
+        val chatRoomDetail = redisChatRoomDetail!!.map {
+            objectMapper.convertValue(it, ChatMessageDto::class.java)
+        }
+
+        // 채팅 메시지 오름차순 정렬
+        val sortedChatRoomDetail = chatRoomDetail.sortedBy { it.time }
+        return sortedChatRoomDetail
     }
 
     /*
@@ -82,10 +106,35 @@ class ChatRoomRedisRepository(
         opsHashChatRoomList.add(chatRoomListKey, roomId)
     }
 
+    /*
+     * Redis - Set 자료구조 형태로 채팅방 목록 조회
+     */
+    fun getChatRoomList(userId: Long): MutableSet<String>? {
+        val chatRoomListKey = getChatRoomListKey(userId)
+        opsHashChatRoomList = redisSetTemplate.opsForSet()
+        return opsHashChatRoomList.members(chatRoomListKey)
+    }
+
     fun setChatRoomListDetail(userId: Long, roomId: String, request: ChatRoomListGetResponse) {
         val chatRoomListKey = getChatRoomListDetailKey(userId, roomId)
         opsHashChatRoomListInfo = redisTemplate.opsForHash()
         opsHashChatRoomListInfo.put(chatRoomListKey, roomId, request)
+    }
+
+    /* 사용자의 채팅 목록, 마지막 메시지들을 조회 */
+    fun getChatRoomListDetail(userId: Long, roomIds: MutableSet<String>): List<ChatRoomListGetResponse> {
+        val chatRoomListWithDetail = ArrayList<ChatRoomListGetResponse>()
+
+        roomIds.forEach { roomId ->
+            val chatRoomListDetailKey = getChatRoomListDetailKey(userId, roomId)
+            opsHashChatRoomListInfo = redisTemplate.opsForHash()
+            val chatRoomListInfo = opsHashChatRoomListInfo.values(chatRoomListDetailKey)
+            chatRoomListWithDetail.addAll(chatRoomListInfo)
+        }
+
+        // 내림차순으로 정렬하여 채팅방 리스트 반환
+        val sortedChatRoomList = chatRoomListWithDetail.sortedByDescending { it.time }
+        return sortedChatRoomList
     }
 
     // Redis - 채팅방 리스트에 대한 Key
@@ -98,10 +147,14 @@ class ChatRoomRedisRepository(
         return "user:$userId:room:$roomId"
     }
 
-    // Redis - 채팅방 단건 상세정보 저장 Key
-    // chat:{roomId}:messages 형태로 저장
     fun getChatRoomKey(roomId: String): String {
-        return "chat$roomId:messages"
+        return "test:dummy"
+    }
+
+    // Redis - 채팅방 단건 상세정보 저장 Key
+    // room:{roomId} 형태로 저장
+    fun getChatRoomDetailKey(roomId: String): String {
+        return "room:$roomId"
     }
 
     /*
