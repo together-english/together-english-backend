@@ -34,7 +34,7 @@ data class CircleDetailResponse(
                     englishLevel = circle.englishLevel,
                     city = circle.city,
                     leaderProfile = circle.leader.profile,
-                    leaderName = circle.leader.name,
+                    leaderName = circle.leader.nickname,
                     thumbnail = circle.thumbnailUrl,
                     introduction = circle.introduction,
                     address = circle.address,

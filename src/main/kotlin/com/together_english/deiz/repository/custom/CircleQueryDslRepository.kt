@@ -143,6 +143,11 @@ class CircleQueryDslRepository(
                 builder.and(favoriteCircle.member.id.eq(request.memberId))
             }
         }
+        request?.writeByMeOnly?.let {
+            if (request.writeByMeOnly) {
+                builder.and(circle.leader.id.eq(request.memberId))
+            }
+        }
 
         return builder
     }
