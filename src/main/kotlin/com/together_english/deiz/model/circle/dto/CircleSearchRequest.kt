@@ -21,4 +21,6 @@ data class CircleSearchRequest(
         val level: EnglishLevel?,
         @field:Schema(description = "내가 찜한 모임만 조회 여부", example = "true/false")
         val likeByMeOnly: Boolean? = false,
+        @field:Schema(description = "내가 작성한 글만 조회 여부", example = "true/false")
+        val writeByMeOnly: Boolean? = false,
 )
