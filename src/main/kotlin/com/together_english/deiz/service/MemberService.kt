@@ -33,6 +33,7 @@ class MemberService(
     ): String {
         var member = memberRepository.findByEmail(memberEmail)
             .orElseThrow { UserNotFoundException() }
+        member.profile?.let { profile -> s3ImageUploadService.deleteFileFromUrl(profile) }
         val profileUrl = s3ImageUploadService.uploadFile(file)
         member.updateProfile(profileUrl, file.originalFilename ?: "noNameFile")
         return profileUrl
