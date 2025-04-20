@@ -50,12 +50,22 @@ class CircleService(
     }
 
     @Transactional
-    fun updateCircleWithSchedule(request: CircleUpdateRequest, member: Member) {
-        val circle = circleRepository.findById(request.id).orElseThrow {
+    fun updateCircleWithSchedule(
+        id: UUID,
+        thumbnailFile: MultipartFile?,
+        request: CircleUpdateRequest,
+        member: Member) {
+        val circle = circleRepository.findById(id).orElseThrow {
             NotExistException("circle id: $request.id")
         }
         if (circle.leader.id != member.id) {
             throw UnAuthorizedAccessException()
+        }
+        thumbnailFile?.let {
+            circle.thumbnailUrl?.let { thumbnailUrl ->
+                s3ImageUploadService.deleteFileFromUrl(thumbnailUrl)
+            }
+            circle.updateThumbnail(s3ImageUploadService.uploadFile(it))
         }
         circle.update(request)
         if (request.circleSchedules.isNotEmpty()) {
@@ -73,6 +83,7 @@ class CircleService(
         if (circle.leader.id != member.id) {
             throw UnAuthorizedAccessException()
         }
+        circle.thumbnailUrl?.let { thumbnailUrl -> s3ImageUploadService.deleteFileFromUrl(thumbnailUrl) }
         circle.delete()
     }
 

@@ -12,9 +12,6 @@ import java.util.*
 @Schema(description = "서클 업데이트 Request")
 data class CircleUpdateRequest(
 
-    @Schema(description = "서클 이름", example = "영어 스터디 모임")
-    val id: UUID,
-
     @field:NotBlank(message = "서클 이름은 필수 입력 사항입니다.")
     @Schema(description = "서클 이름", example = "영어 스터디 모임")
     val title: String,
