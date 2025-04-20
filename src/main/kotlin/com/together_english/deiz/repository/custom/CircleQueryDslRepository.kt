@@ -129,6 +129,7 @@ class CircleQueryDslRepository(
     private fun createDynamicCondition(request: CircleSearchRequest?): BooleanBuilder {
         val builder = BooleanBuilder()
 
+        builder.and(circle.valid.eq(true))
         request?.title?.let {
             builder.and(circle.title.contains(request.title))
         }

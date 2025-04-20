@@ -45,6 +45,9 @@ data class CircleCreateRequest (
         @Schema(description = "연락 방법", example = "KAKAO_OPEN_CHAT")
         val contactWay: String,
 
+        @Schema(description = "온라인 URL (선택 사항)", example = "https://example.com/online-meeting")
+        val onlineUrl: String? = null,
+
         @field:NotNull(message = "스케줄은 최소 하나 이상 입력해야 합니다.")
         @field:Size(min = 1, message = "스케줄은 최소 하나 이상 입력해야 합니다.")
         @Schema(description = "서클 스케줄 목록 (최소 하나 이상)")
@@ -57,6 +60,7 @@ data class CircleCreateRequest (
                 englishLevel = this.englishLevel,
                 city = this.city,
                 introduction = this.introduction,
+                onlineUrl = this.onlineUrl,
                 address = this.address,
                 capacity = this.capacity,
                 attendMode = this.attendMode,

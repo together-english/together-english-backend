@@ -52,6 +52,33 @@ class CircleController(
     }
 
     @Operation(
+        summary = "영어 모임 업데이트",
+        description = "영어 모임을 업데이트 합니다.",
+        security = [SecurityRequirement(name = "Authorization")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Circle updated successfully with ID: 1"),
+            ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data.")
+        ]
+    )
+    @PutMapping("/{id}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun updateCircle(
+        @PathVariable id: UUID,
+        @Valid @RequestPart request: CircleUpdateRequest,
+        @RequestPart(required = false) thumbnailFile: MultipartFile?,
+        @Parameter(hidden = true) member: Member
+    ): ResponseEntity<MainResponse<String>> {
+        circleService.updateCircleWithSchedule(
+            id = id,
+            thumbnailFile = thumbnailFile,
+            request = request,
+            member = member
+        )
+        return ResponseEntity.ok(getSuccessResponse("Circle updated successfully with ID: ${id}"))
+    }
+
+    @Operation(
         summary = "영어 모임 목록 페이지네이션 조회",
         description = "영어 모임 목록을 페이징하여 반환합니다.",
     )
@@ -72,28 +99,6 @@ class CircleController(
         return ResponseEntity.ok(MainResponse.getSuccessResponse(circlesPage))
     }
 
-    @Operation(
-        summary = "영어 모임 업데이트",
-        description = "영어 모임을 업데이트 합니다.",
-        security = [SecurityRequirement(name = "Authorization")]
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "200", description = "Circle updated successfully with ID: 1"),
-            ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data.")
-        ]
-    )
-    @PutMapping
-    fun updateCircle(
-        @Valid @RequestBody request: CircleUpdateRequest,
-        @Parameter(hidden = true) member: Member
-    ): ResponseEntity<MainResponse<String>> {
-        circleService.updateCircleWithSchedule(
-            request = request,
-            member = member
-        )
-        return ResponseEntity.ok(getSuccessResponse("Circle updated successfully with ID: ${request.id}"))
-    }
 
     @Operation(
         summary = "영어 모임 삭제하기",
