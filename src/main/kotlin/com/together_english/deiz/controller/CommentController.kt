@@ -82,7 +82,7 @@ class CommentController(private val commentService: CommentService) {
             ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data."),
         ]
     )
-    @PatchMapping()
+    @PutMapping()
     fun updateCircleComment(
         @Valid @RequestBody request: CommentUpdateRequest,
         @Parameter(hidden = true) member: Member

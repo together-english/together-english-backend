@@ -22,7 +22,7 @@ data class CommentPageResponse(
     val memberNickname: String,
     @Schema(description = "유저 프로필", example = "URL")
     @JsonProperty("profile")
-    val memberProfile: String,
+    val memberProfile: String?,
 ) {
 
 }
