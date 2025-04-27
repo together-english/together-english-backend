@@ -41,6 +41,7 @@ class WebSecurityConfig(
 
                 authorize(HttpMethod.GET, "/comment/**", permitAll)
                 authorize(HttpMethod.POST,"/comment/**", hasAuthority(Role.USER.authority))
+                authorize(HttpMethod.PUT,"/comment/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.PATCH,"/comment/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.DELETE,"/comment/**", hasAuthority(Role.USER.authority))
 
