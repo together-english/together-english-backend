@@ -27,7 +27,7 @@
 ## 🏗️ **프로젝트 ERD**
 ![Team of English Together (1)](https://github.com/user-attachments/assets/f73c8f55-2210-4c8e-b009-f3db3222f475)
 
-프로젝트의 [ERD(Entity-Relationship Diagram)](https://www.erdcloud.com/d/EmXm8G9NfB5syqhZM)를 통해 데이터베이스 구조를 확인할 수 있습니다. 주요 엔티티는 다음과 같습니다.
+프로젝트의 [ERD(Entity-Relationship Diagram)](https://www.erdcloud.com/d/jzyEvDZbEjwrWNdth)를 통해 데이터베이스 구조를 확인할 수 있습니다. 주요 엔티티는 다음과 같습니다.
 
 - **회원(Member):** 플랫폼 사용자를 관리합니다.
 - **모임(Circle):** 영어 스터디 모임을 구성하며, 레벨 및 지역에 따라 분류됩니다.
