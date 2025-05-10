@@ -4,6 +4,13 @@
 
 <br><br>
 
+## 🌐 **서비스 링크**
+
+- **웹 서비스:** [English Together](https://www.english-together.shop/)
+- **API 스웨거 문서:** [Swagger UI](https://api.english-together.shop/swagger-ui/index.html)
+
+<br><br>
+
 ## 🔧 **기술 스택**
 
 - **프레임워크:** Spring Boot 3.3.0
