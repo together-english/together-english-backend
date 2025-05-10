@@ -18,7 +18,7 @@
 - **언어:** Kotlin 1.9.24
 - **데이터베이스:** PostgreSQL
 - **CI/CD:** GitAction, Docker
-- **클라우드:** AWS (S3, EC2, RDS, Load Balancer, Auto Scaling)
+- **클라우드:** AWS (S3, EC2, RDS)
 
 <br><br>
 
