@@ -36,12 +36,8 @@
 
 <br><br>
 
-## 🧐 **트러블슈팅**
+## 🧐 **개발과 함께 스터디**
 
 [Kotlin, JPA 환경에서 Entity 설계에 대한 고민](https://fun-coding-study.tistory.com/404)
 
 [AWS S3를 활용한 프로필 사진 업로드 기능 개발 회고](https://fun-coding-study.tistory.com/405)
-
-[Kotlin JDSL 도입기: Page 타입 응답값 반환하기](https://fun-coding-study.tistory.com/407)
-
-[Kotlin JDSL에서 Null 값을 가진 조건 무시하기](https://fun-coding-study.tistory.com/408)
