@@ -14,7 +14,7 @@
 ## 🔧 **기술 스택**
 
 - **프레임워크:** Spring Boot 3.3.0
-- **ORM:** JPA / Kotlin JDSL
+- **ORM:** JPA / QueryDsl
 - **언어:** Kotlin 1.9.24
 - **데이터베이스:** PostgreSQL
 - **CI/CD:** GitAction, Docker
