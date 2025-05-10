@@ -25,6 +25,7 @@
 <br><br>
 
 ## 🏗️ **프로젝트 ERD**
+![Team of English Together (1)](https://github.com/user-attachments/assets/f73c8f55-2210-4c8e-b009-f3db3222f475)
 
 프로젝트의 [ERD(Entity-Relationship Diagram)](https://www.erdcloud.com/d/EmXm8G9NfB5syqhZM)를 통해 데이터베이스 구조를 확인할 수 있습니다. 주요 엔티티는 다음과 같습니다.
 
