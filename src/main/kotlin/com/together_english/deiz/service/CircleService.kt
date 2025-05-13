@@ -26,6 +26,7 @@ class CircleService(
     private val s3ImageUploadService: S3ImageUploadService,
     private val circleScheduleRepository: CircleScheduleRepository,
     private val favoriteCircleRepository: FavoriteCircleRepository,
+    private val notificationService: NotificationService
 ) {
 
     @Transactional
@@ -138,13 +139,16 @@ class CircleService(
 
         if (circleJoinRequest != null) {
             when (circleJoinRequest.status) {
-                WAITING -> throw AlreadyExistException("모임신청 요청")
+                WAITING -> throw RuntimeException("이미 요청을 보냈습니다.")
                 ACCEPTED -> throw RuntimeException("이미 가입 승인된 회원입니다.")
                 REJECTED -> throw RuntimeException("가입요청이 거절된 회원입니다.")
                 BANISHED -> throw RuntimeException("가입이 제한된 회원입니다.")
-                else -> null
+                else -> throw RuntimeException("가입이 제한된 회원입니다.")
             }
         }
+
+        notificationService.publishNotification(circle.leader.id,
+            "${member.nickname} 로 부터 ${circle.title}의 " + "영어모임 가입 요청이 도착했습니다.")
 
         val circleJoinRequestToSave = request.toEntity(circle, member)
         circleJoinRepository.save(circleJoinRequestToSave)
