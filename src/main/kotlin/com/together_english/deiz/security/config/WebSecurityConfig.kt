@@ -45,6 +45,8 @@ class WebSecurityConfig(
                 authorize(HttpMethod.PATCH,"/comment/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.DELETE,"/comment/**", hasAuthority(Role.USER.authority))
 
+                authorize(HttpMethod.GET, "/notification", hasAuthority(Role.USER.authority))
+
                 authorize("/h2-console/**", permitAll)
                 authorize("/swagger-ui/**", permitAll)
                 authorize("api-docs/**", permitAll)
