@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.*
@@ -27,7 +28,7 @@ class NotificationService(
         eventPublisher.publishEvent(NotificationEvent(memberId, message))
     }
 
-    @Async("notificationTaskExecutor")
+    @Async("taskExecutor")
     @Transactional
     fun handleNotificationEvent(event: NotificationEvent) {
         try {
@@ -44,7 +45,7 @@ class NotificationService(
         }
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     fun findNotificationsByMemberIdAfterCreatedAt(
         member: Member,
         viewed: Boolean?,
@@ -58,10 +59,32 @@ class NotificationService(
         val result = if (hasNext) notifications.dropLast(1) else notifications
         val nextLastCreatedAt = result.lastOrNull()?.createdAt
 
+        val notificationIds = result.filter { !it.viewed }.map { it.id }
+        if (notificationIds.isNotEmpty()) {
+            updateViewedAsync(notificationIds)
+            logger.debug("Triggered async viewed update for notifications: $notificationIds")
+        } else {
+            logger.debug("No notifications to update viewed status")
+        }
+
         return NotificationPageResponse(
             notifications = result.map { it.toDto() },
             lastCreatedAt = nextLastCreatedAt,
             hasNext = hasNext
         )
     }
+
+    @Async("taskExecutor")
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    fun updateViewedAsync(notificationIds: List<UUID>) {
+        try {
+            val now = LocalDateTime.now()
+            val updatedCount = notificationRepository.updateViewedByIds(notificationIds, now)
+            logger.info("Async updated viewed to true for $updatedCount notifications: $notificationIds")
+        } catch (e: Exception) {
+            logger.error("Failed to async update viewed for notifications: $notificationIds", e)
+        }
+    }
+
+
 }

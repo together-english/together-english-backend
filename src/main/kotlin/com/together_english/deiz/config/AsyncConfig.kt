@@ -9,7 +9,7 @@ import java.util.concurrent.Executor
 @Configuration
 @EnableAsync
 class AsyncConfig {
-    @Bean(name = ["notificationTaskExecutor"])
+    @Bean(name = ["taskExecutor"])
     fun notificationTaskExecutor(): Executor {
         val executor = ThreadPoolTaskExecutor().apply {
             corePoolSize = 5
