@@ -62,7 +62,7 @@ jobs:
         with:
           host: ${{ env.EC2_INSTANCE_IP }}
           key: ${{ env.SSH_PRIVATE_KEY }}
-          username: ec2-user
+          username: ubuntu
           script: |
             echo ${{ secrets.GHCR_PAT }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
             docker pull ghcr.io/${{ github.repository_owner }}/together-english-backend:latest
