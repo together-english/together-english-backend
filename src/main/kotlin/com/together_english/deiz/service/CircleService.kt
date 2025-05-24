@@ -9,8 +9,11 @@ import com.together_english.deiz.model.circle.FavoriteCircle
 import com.together_english.deiz.model.circle.dto.*
 import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.repository.*
+import com.together_english.deiz.repository.custom.CircleJoinRequestQueryDslRepository
 import com.together_english.deiz.repository.custom.CircleQueryDslRepository
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -26,8 +29,31 @@ class CircleService(
     private val s3ImageUploadService: S3ImageUploadService,
     private val circleScheduleRepository: CircleScheduleRepository,
     private val favoriteCircleRepository: FavoriteCircleRepository,
-    private val notificationService: NotificationService
+    private val notificationService: NotificationService,
+    private val circleJoinRequestRepository: CircleJoinRequestQueryDslRepository
 ) {
+
+    private val logger = LoggerFactory.getLogger(this::class.java)
+
+    @Transactional(readOnly = true)
+    fun findCircleJoinRequestsByMember(
+        member: Member,
+        page: Int,
+        size: Int
+    ): CircleJoinRequestPageResponse {
+        logger.info("Fetching circle join requests for member: $member, page: $page, size: $size")
+
+        val pageable = PageRequest.of(page, size)
+        val pageResult = circleJoinRequestRepository.findByMemberIdWithPagination(member.id, pageable)
+
+        return CircleJoinRequestPageResponse(
+            content = pageResult.content,
+            page = pageResult.number,
+            size = pageResult.size,
+            totalElements = pageResult.totalElements,
+            totalPages = pageResult.totalPages
+        )
+    }
 
     @Transactional
     fun createCircleWithSchedule(request: CircleCreateRequest, member: Member, thumbnailFile: MultipartFile?): String {
