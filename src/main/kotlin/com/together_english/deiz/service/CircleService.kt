@@ -9,8 +9,11 @@ import com.together_english.deiz.model.circle.FavoriteCircle
 import com.together_english.deiz.model.circle.dto.*
 import com.together_english.deiz.model.member.entity.Member
 import com.together_english.deiz.repository.*
+import com.together_english.deiz.repository.custom.CircleJoinRequestQueryDslRepository
 import com.together_english.deiz.repository.custom.CircleQueryDslRepository
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -26,7 +29,31 @@ class CircleService(
     private val s3ImageUploadService: S3ImageUploadService,
     private val circleScheduleRepository: CircleScheduleRepository,
     private val favoriteCircleRepository: FavoriteCircleRepository,
+    private val notificationService: NotificationService,
+    private val circleJoinRequestRepository: CircleJoinRequestQueryDslRepository
 ) {
+
+    private val logger = LoggerFactory.getLogger(this::class.java)
+
+    @Transactional(readOnly = true)
+    fun findCircleJoinRequestsByMember(
+        member: Member,
+        page: Int,
+        size: Int
+    ): CircleJoinRequestPageResponse {
+        logger.info("Fetching circle join requests for member: $member, page: $page, size: $size")
+
+        val pageable = PageRequest.of(page, size)
+        val pageResult = circleJoinRequestRepository.findByMemberIdWithPagination(member.id, pageable)
+
+        return CircleJoinRequestPageResponse(
+            content = pageResult.content,
+            page = pageResult.number,
+            size = pageResult.size,
+            totalElements = pageResult.totalElements,
+            totalPages = pageResult.totalPages
+        )
+    }
 
     @Transactional
     fun createCircleWithSchedule(request: CircleCreateRequest, member: Member, thumbnailFile: MultipartFile?): String {
@@ -138,13 +165,16 @@ class CircleService(
 
         if (circleJoinRequest != null) {
             when (circleJoinRequest.status) {
-                WAITING -> throw AlreadyExistException("모임신청 요청")
+                WAITING -> throw RuntimeException("이미 요청을 보냈습니다.")
                 ACCEPTED -> throw RuntimeException("이미 가입 승인된 회원입니다.")
                 REJECTED -> throw RuntimeException("가입요청이 거절된 회원입니다.")
                 BANISHED -> throw RuntimeException("가입이 제한된 회원입니다.")
-                else -> null
+                else -> throw RuntimeException("가입이 제한된 회원입니다.")
             }
         }
+
+        notificationService.publishNotification(circle.leader.id,
+            "${member.nickname} 로 부터 ${circle.title}의 " + "영어모임 가입 요청이 도착했습니다.")
 
         val circleJoinRequestToSave = request.toEntity(circle, member)
         circleJoinRepository.save(circleJoinRequestToSave)
@@ -199,6 +229,8 @@ class CircleService(
         circleMemberRepository.save(circleMemberToSave)
         circleJoinRequest.updateStatus(ACCEPTED)
 
+        notificationService.publishNotification(circleJoinRequest.member.id, "${circleMember.circle.title} 해당 모임에 가입이 승인 되었습니다.")
+
         return circleMemberToSave.id.toString()
     }
 
@@ -216,16 +248,13 @@ class CircleService(
 
         require(circleMember.role == CircleMember.CircleRole.LEADER) { "모임 리더권한 유저만 모임 가입요청 거절이 가능합니다." }
         require(circleJoinRequest.status == WAITING) { "모임 가입요청이 대기상태인 경우만 거절 가능합니다. 현재 상태: ${circleJoinRequest.status}" }
-
         circleJoinRequest.updateStatus(REJECTED)
+        notificationService.publishNotification(circleJoinRequest.member.id, "${circleMember.circle.title} 해당 모임에 가입이 거절 되었습니다.")
+        
     }
 
-    fun findMemberByCircleList(circleId: UUID, member: Member, pageable: Pageable): Page<CircleMemberPageResponse?> {
-        val isCircleMember = circleMemberRepository.existsByCircleIdAndMemberId(circleId, member.id)
-        require(isCircleMember) { "모임에 가입된 멤버만 조회 가능합니다. circleId : $circleId" }
-
-        val circleMemberList = circleMemberRepository.findMemberByCircle(circleId, pageable)
-        return circleMemberList
+    fun findMemberByCircleList(circleId: UUID, pageable: Pageable): Page<CircleMemberPageResponse?> {
+        return circleMemberRepository.findMemberByCircle(circleId, pageable)
     }
 
     fun findMemberDetailsByCircle(circleMemberId: UUID, member: Member): CircleMemberDetailResponse {
@@ -257,6 +286,9 @@ class CircleService(
         }
 
         circleMemberRepository.deleteById(circleMemberId)
+        notificationService.publishNotification(circleMember.circle.leader.id,
+            "${circleMember.circle.title}모임에서 ${member.nickname} 님이 탈퇴하였습니다.")
+
     }
 
     @Transactional
@@ -287,6 +319,8 @@ class CircleService(
         }
 
         circleMember.updateStatus(CircleMember.CircleMemberStatus.BANNED)
+        notificationService.publishNotification(circleJoinRequest.member.id, "${circleMember.circle.title} 모임에서 강퇴되었습니다.")
+
     }
 
     fun findCirclesByPagination(pageable: Pageable, request: CircleSearchRequest?)

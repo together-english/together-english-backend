@@ -39,8 +39,9 @@ class CustomCircleMemberRepositoryImpl(
                 ).whereAnd(
                     path(CircleMember::circle).path(Circle::id).eq(circleId),
                     path(Circle::valid).eq(true),
-                    path(Member::valid).eq(true)
-                )
+                    path(Member::valid).eq(true),
+                    path(CircleMember::status).notEqual(CircleMember.CircleMemberStatus.BANNED)
+                    )
             }
         return result
     }

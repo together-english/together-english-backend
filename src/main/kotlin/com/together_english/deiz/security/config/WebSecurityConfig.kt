@@ -31,7 +31,7 @@ class WebSecurityConfig(
                 authorize("/auth/**", permitAll)
                 authorize("/member/**", hasAuthority(Role.USER.authority))
 
-                authorize(HttpMethod.GET, "/circle/{circleId}/member", hasAuthority(Role.USER.authority))
+                authorize(HttpMethod.GET, "/circle/{circleId}/member", permitAll)
                 authorize(HttpMethod.GET, "/circle/**", permitAll)
                 authorize(HttpMethod.POST,"/circle/list", permitAll)
                 authorize(HttpMethod.POST,"/circle/**", hasAuthority(Role.USER.authority))
@@ -44,6 +44,8 @@ class WebSecurityConfig(
                 authorize(HttpMethod.PUT,"/comment/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.PATCH,"/comment/**", hasAuthority(Role.USER.authority))
                 authorize(HttpMethod.DELETE,"/comment/**", hasAuthority(Role.USER.authority))
+
+                authorize(HttpMethod.GET, "/notification", hasAuthority(Role.USER.authority))
 
                 authorize("/h2-console/**", permitAll)
                 authorize("/swagger-ui/**", permitAll)

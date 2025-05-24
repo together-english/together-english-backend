@@ -31,6 +31,27 @@ class CircleController(
 ) {
 
     @Operation(
+        summary = "모임 가입 요청 목록 조회",
+        description = "지정된 멤버의 모임 가입 요청 목록을 페이지네이션으로 조회합니다.",
+        security = [SecurityRequirement(name = "Authorization")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Circle join requests retrieved successfully"),
+            ApiResponse(responseCode = "400", description = "Bad Request: Invalid memberId, page, or size.")
+        ]
+    )
+    @GetMapping("/circle-join-requests")
+    fun getCircleJoinRequests(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") size: Int,
+        @Parameter(hidden = true) member: Member
+    ): ResponseEntity<MainResponse<CircleJoinRequestPageResponse>> {
+        val response = circleService.findCircleJoinRequestsByMember(member, page, size)
+        return ResponseEntity.ok(getSuccessResponse(response))
+    }
+
+    @Operation(
         summary = "영어 모임 생성",
         description = "영어 모임을 생성합니다. 반환 값으로 모임의 ID 값이 포함됩니다.",
         security = [SecurityRequirement(name = "Authorization")]
@@ -315,9 +336,8 @@ class CircleController(
         @PageableDefault(
             size = 10, page = 0, sort = ["updatedAt"], direction = Sort.Direction.DESC
         ) pageable: Pageable,
-        @Parameter(hidden = true) member: Member
     ): ResponseEntity<MainResponse<Page<CircleMemberPageResponse?>>> {
-        val circleMemberList = circleService.findMemberByCircleList(circleId, member, pageable)
+        val circleMemberList = circleService.findMemberByCircleList(circleId, pageable)
         return ResponseEntity.ok(getSuccessResponse(circleMemberList))
     }
 
