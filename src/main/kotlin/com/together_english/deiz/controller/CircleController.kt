@@ -315,9 +315,8 @@ class CircleController(
         @PageableDefault(
             size = 10, page = 0, sort = ["updatedAt"], direction = Sort.Direction.DESC
         ) pageable: Pageable,
-        @Parameter(hidden = true) member: Member
     ): ResponseEntity<MainResponse<Page<CircleMemberPageResponse?>>> {
-        val circleMemberList = circleService.findMemberByCircleList(circleId, member, pageable)
+        val circleMemberList = circleService.findMemberByCircleList(circleId, pageable)
         return ResponseEntity.ok(getSuccessResponse(circleMemberList))
     }
 
