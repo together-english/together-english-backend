@@ -203,6 +203,8 @@ class CircleService(
         circleMemberRepository.save(circleMemberToSave)
         circleJoinRequest.updateStatus(ACCEPTED)
 
+        notificationService.publishNotification(circleJoinRequest.member.id, "${circleMember.circle.title} 해당 모임에 가입이 승인 되었습니다.")
+
         return circleMemberToSave.id.toString()
     }
 
@@ -222,6 +224,8 @@ class CircleService(
         require(circleJoinRequest.status == WAITING) { "모임 가입요청이 대기상태인 경우만 거절 가능합니다. 현재 상태: ${circleJoinRequest.status}" }
 
         circleJoinRequest.updateStatus(REJECTED)
+        notificationService.publishNotification(circleJoinRequest.member.id, "${circleMember.circle.title} 해당 모임에 가입이 거절 되었습니다.")
+        
     }
 
     fun findMemberByCircleList(circleId: UUID, member: Member, pageable: Pageable): Page<CircleMemberPageResponse?> {
@@ -261,6 +265,9 @@ class CircleService(
         }
 
         circleMemberRepository.deleteById(circleMemberId)
+        notificationService.publishNotification(circleMember.circle.leader.id,
+            "${circleMember.circle.title}모임에서 ${member.nickname} 님이 탈퇴하였습니다.")
+
     }
 
     @Transactional
@@ -291,6 +298,8 @@ class CircleService(
         }
 
         circleMember.updateStatus(CircleMember.CircleMemberStatus.BANNED)
+        notificationService.publishNotification(circleJoinRequest.member.id, "${circleMember.circle.title} 모임에서 강퇴되었습니다.")
+
     }
 
     fun findCirclesByPagination(pageable: Pageable, request: CircleSearchRequest?)
