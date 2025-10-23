@@ -48,16 +48,14 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    env:
-      ONPREM_SERVER_IP: ${{ secrets.ONPREM_SERVER_IP }}  # 예: 12.45.12.45
     steps:
       - name: SSH into On-Premise Server and Docker Deploy
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ env.ONPREM_SERVER_IP }}
+          host: ${{ secrets.ONPREM_SERVER_IP }}
           username: deiz
           password: ${{ secrets.ONPREM_SERVER_KEY }}  # 비밀번호 기반 인증
-          debug: true  # 디버깅 로그 활성화
+          timeout: 40s
           script: |
             echo "Logging in to Docker..."
             echo ${{ secrets.GHCR_PAT }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
