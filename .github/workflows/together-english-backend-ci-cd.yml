@@ -54,18 +54,18 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     env:
-      EC2_INSTANCE_IP : ${{ secrets.EC2_INSTANCE_IP }}
-      SSH_PRIVATE_KEY : ${{ secrets.SSH_PRIVATE_KEY }}
+      EC2_INSTANCE_IP : ${{ secrets.ONPREM_SERVER_IP }}
+      SSH_PRIVATE_KEY : ${{ secrets.ONPREM_SERVER_KEY }}
     steps:
       - name: SSH into EC2 and Docker Deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ env.EC2_INSTANCE_IP }}
           key: ${{ env.SSH_PRIVATE_KEY }}
-          username: ubuntu
+          username: deiz
           script: |
             echo ${{ secrets.GHCR_PAT }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
             docker pull ghcr.io/${{ github.repository_owner }}/together-english-backend:latest
             docker stop together-english-backend || true
             docker rm together-english-backend || true
-            docker run -d -p 8080:80 --name together-english-backend -v ${{ secrets.BACKEND_LOGPATH }}:${{ secrets.DOCKER_LOGPATH }} ghcr.io/${{ github.repository_owner }}/together-english-backend:latest
+            docker run -d -p 8080:80 --name together-english-backend -v ${{ secrets.ONPREM_BACKEND_LOGPATH }}:${{ secrets.DOCKER_LOGPATH }} ghcr.io/${{ github.repository_owner }}/together-english-backend:latest
