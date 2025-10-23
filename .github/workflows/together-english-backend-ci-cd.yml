@@ -1,11 +1,8 @@
 name: CI/CD together-english-backend
-
-# Event 설정: branch 에 push 이벤트가 생겼을때, 작업 수행
 on:
   push:
     branches:
       - main
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -21,7 +18,6 @@ jobs:
         run: chmod +x ./gradlew
       - name: Test with Gradle
         run: ./gradlew test
-
   build:
     needs: test
     runs-on: ubuntu-latest
@@ -49,23 +45,26 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/together-english-backend:latest
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
     env:
-      EC2_INSTANCE_IP : ${{ secrets.ONPREM_SERVER_IP }}
-      SSH_PRIVATE_KEY : ${{ secrets.ONPREM_SERVER_KEY }}
+      ONPREM_SERVER_IP: ${{ secrets.ONPREM_SERVER_IP }}  # 예: 12.45.12.45
     steps:
-      - name: SSH into EC2 and Docker Deploy
+      - name: SSH into On-Premise Server and Docker Deploy
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ env.EC2_INSTANCE_IP }}
-          key: ${{ env.SSH_PRIVATE_KEY }}
+          host: ${{ env.ONPREM_SERVER_IP }}
           username: deiz
+          password: ${{ secrets.ONPREM_SERVER_KEY }}  # 비밀번호 기반 인증
+          debug: true  # 디버깅 로그 활성화
           script: |
+            echo "Logging in to Docker..."
             echo ${{ secrets.GHCR_PAT }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+            echo "Pulling Docker image..."
             docker pull ghcr.io/${{ github.repository_owner }}/together-english-backend:latest
+            echo "Stopping and removing existing container..."
             docker stop together-english-backend || true
             docker rm together-english-backend || true
+            echo "Running new container..."
             docker run -d -p 8080:80 --name together-english-backend -v ${{ secrets.ONPREM_BACKEND_LOGPATH }}:${{ secrets.DOCKER_LOGPATH }} ghcr.io/${{ github.repository_owner }}/together-english-backend:latest
